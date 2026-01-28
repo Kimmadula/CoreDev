@@ -4,39 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Membership Application Guide</title>
+    <title>Membership Application Guide - Knowledge Base</title>
+    <link rel="icon" type="image/svg+xml" href="/coreDev.png">
     <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Crimson+Pro:wght@400;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
         rel="stylesheet">
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --bg-body: #f9fafb;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --border: #e5e7eb;
+            --sidebar-width: 280px;
+            --header-height: 64px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-bg: #c8c8cc;
-            --sidebar-bg: #d4d4d8;
-            --header-bg: #6b6b6f;
-            --content-bg: #f5f5f7;
-            --card-bg: #636366;
-            --text-primary: #1a1a1a;
-            --text-secondary: #4a4a4a;
-            --text-light: #ffffff;
-            --accent-orange: #ff6b35;
-            --accent-blue: #4a90e2;
-            --border-color: rgba(0, 0, 0, 0.1);
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
-        }
-
         body {
-            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--text-primary);
-            line-height: 1.6;
-            background: var(--content-bg);
-            overflow-x: hidden;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-main);
+            background: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Header */
@@ -45,510 +44,387 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 60px;
-            background: var(--header-bg);
+            height: var(--header-height);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 2rem;
-            box-shadow: var(--shadow-md);
-            z-index: 100;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            z-index: 50;
         }
 
         .logo-section {
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-main);
         }
 
         .logo-icon {
             width: 32px;
-            height: 32px;
-            background: var(--text-light);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--text-primary);
         }
 
         .company-name {
-            color: var(--text-light);
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.01em;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
         }
 
-        /* Layout */
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-simple {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .btn-simple:hover {
+            color: var(--primary);
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #ffffff;
+            min-width: 240px;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            z-index: 100;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            transition: background 0.1s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f3f4f6;
+            color: var(--primary);
+        }
+
+        /* Main Layout */
         .layout {
             display: flex;
-            margin-top: 60px;
-            min-height: calc(100vh - 60px);
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
         }
 
         /* Sidebar */
         .sidebar {
-            width: 280px;
-            background: var(--sidebar-bg);
-            padding: 2rem 1rem;
-            overflow-y: auto;
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem 1rem;
             position: fixed;
-            left: 0;
-            top: 60px;
+            top: var(--header-height);
             bottom: 0;
-            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
         }
 
-        .nav-section {
+        .sidebar-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-left: 0.75rem;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.6rem 0.75rem;
+            margin-bottom: 0.25rem;
+            text-decoration: none;
+            color: var(--text-muted);
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #f3f4f6;
+            color: var(--text-main);
+        }
+
+        .nav-item.active {
+            background: #eef2ff;
+            color: var(--primary);
+        }
+
+        /* Collapsible Sections */
+        .nav-group {
             margin-bottom: 1.5rem;
         }
 
-        .nav-section-header {
+        .nav-group-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 6px;
+            padding: 0.6rem 0.75rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            color: var(--text-main);
             font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--accent-blue);
+            border-radius: 6px;
         }
 
-        .nav-section-header:hover {
-            background: rgba(255, 255, 255, 0.5);
+        .nav-group-header:hover {
+            background: #f9fafb;
         }
 
-        .nav-section-header.active {
-            background: var(--accent-blue);
-            color: var(--text-light);
+        .nav-group-body {
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+            display: none;
         }
 
-        .toggle-icon {
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
+        .nav-group-body.open {
+            display: block;
         }
 
-        .toggle-icon.open {
+        .chevron {
+            transition: transform 0.2s;
+        }
+
+        .nav-group-body.open+.chevron {
             transform: rotate(180deg);
         }
 
-        .toggle-icon svg {
-            width: 100%;
-            height: 100%;
-            fill: currentColor;
-        }
-
-        .nav-subsection {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .nav-subsection.open {
-            max-height: 500px;
-        }
-
-        .nav-subsection-item {
-            padding: 0.65rem 1rem 0.65rem 2rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            border-left: 3px solid transparent;
-        }
-
-        .nav-subsection-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            color: var(--text-primary);
-            border-left-color: var(--accent-blue);
-        }
+        /* This approach needs JS logic */
 
         /* Main Content */
         .main-content {
-            margin-left: 280px;
+            margin-left: var(--sidebar-width);
             flex: 1;
-            padding: 3rem;
-            background: var(--content-bg);
+            padding: 3rem 4rem;
+            max-width: 1000px;
+            /* Constrain reading width */
         }
 
-        .content-wrapper {
-            max-width: 900px;
-            margin: 0 auto;
+        .breadcrumb {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
         }
 
-        /* Video Placeholder */
-        .video-container {
+        h1.page-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p,
+        li {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Styling Cards/Blocks */
+        .info-box {
+            background: #eef2ff;
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .video-box {
             width: 100%;
-            background: var(--card-bg);
+            aspect-ratio: 16/9;
+            background: #111827;
             border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 3rem;
-            box-shadow: var(--shadow-md);
-            aspect-ratio: 16 / 9;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-        }
-
-        .video-placeholder {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-
-        /* Page Title */
-        .page-title {
-            font-family: 'Crimson Pro', serif;
-            font-size: 2rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: var(--text-primary);
-            letter-spacing: -0.01em;
-        }
-
-        /* Content Sections */
-        .content-section {
+            color: white;
             margin-bottom: 2.5rem;
-            animation: fadeInUp 0.5s ease-out both;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .content-section:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .content-section:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .content-section:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .content-section:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--accent-orange);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .section-content {
-            padding-left: 1.5rem;
-        }
-
-        .content-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .content-list li {
-            padding: 0.5rem 0;
-            color: var(--text-secondary);
-            position: relative;
-            padding-left: 1.5rem;
-        }
-
-        .content-list li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 1rem;
-            width: 6px;
-            height: 6px;
-            background: var(--text-secondary);
-            border-radius: 50%;
-        }
-
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
+        /* Mobile */
+        .mobile-menu-btn {
             display: none;
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 56px;
-            height: 56px;
-            background: var(--accent-blue);
-            border-radius: 50%;
-            border: none;
-            color: var(--text-light);
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-            z-index: 1000;
-            transition: all 0.3s ease;
         }
 
-        .mobile-menu-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        .mobile-menu-toggle svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 968px) {
+        @media (max-width: 768px) {
             .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 200;
+                display: none;
             }
 
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
+            /* Hide for now or add implementing toggle logic */
             .main-content {
                 margin-left: 0;
                 padding: 2rem 1.5rem;
             }
 
-            .mobile-menu-toggle {
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .mobile-menu-btn {
+                display: block;
             }
-
-            .header {
-                padding: 0 1.5rem;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .page-title {
-                font-size: 1.5rem;
-            }
-
-            .section-title {
-                font-size: 1.1rem;
-            }
-
-            .main-content {
-                padding: 1.5rem 1rem;
-            }
-
-            .sidebar {
-                width: 100%;
-                max-width: 320px;
-            }
-        }
-
-        /* Sidebar Overlay */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 150;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
         }
     </style>
 </head>
 
 <body>
-    <!-- Header -->
+
     <header class="header">
-        <div class="logo-section">
-            <div class="logo-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-                </svg>
+        <a href="index.html" class="logo-section">
+            <img src="coreDev.png" class="logo-icon" alt="Logo">
+            <div class="company-name">coreDev</div>
+        </a>
+        <div class="header-actions">
+            <a href="index.html" class="btn-simple">Home</a>
+
+            <div class="dropdown">
+                <span class="btn-simple">Products ▼</span>
+                <div class="dropdown-content">
+                    <a href="#" class="dropdown-item">Help Desk</a>
+                    <a href="#" class="dropdown-item">IACCS 2013</a>
+                    <a href="#" class="dropdown-item">Farm Pro Management</a>
+                    <a href="#" class="dropdown-item">Membership Application</a>
+                    <a href="#" class="dropdown-item">OrangePay Plus</a>
+                    <a href="#" class="dropdown-item">E-Services</a>
+                    <a href="#" class="dropdown-item">Electronix Web</a>
+                    <a href="#" class="dropdown-item">Archive Box</a>
+                    <a href="#" class="dropdown-item">E-Collect</a>
+                    <a href="#" class="dropdown-item">Web-Based Queueing System</a>
+                    <a href="#" class="dropdown-item">Activity Builder</a>
+                </div>
             </div>
-            <div class="company-name">coreDev Solutions Inc.</div>
         </div>
     </header>
 
-    <!-- Layout -->
     <div class="layout">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <nav>
-                <div class="nav-section">
-                    <div class="nav-section-header active" onclick="toggleSection(this)">
-                        <span>Sample Section</span>
-                        <div class="toggle-icon open">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M7 10l5 5 5-5z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="nav-subsection open">
-                        <div class="nav-subsection-item">Sample Subsection</div>
-                    </div>
+        <aside class="sidebar">
+            <div class="sidebar-title">Product</div>
+            <div class="nav-item">Introduction</div>
+            <div class="nav-item">Getting Started</div>
+
+            <div class="nav-group">
+                <div class="nav-group-header" onclick="toggleGroup(this)">
+                    Applications <span class="chevron">▼</span>
                 </div>
-
-                <div class="nav-section">
-                    <div class="nav-section-header" onclick="toggleSection(this)">
-                        <span>Sample Section</span>
-                        <div class="toggle-icon">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M7 10l5 5 5-5z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="nav-subsection">
-                        <div class="nav-subsection-item">Sample Subsection</div>
-                    </div>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Sidebar Overlay (for mobile) -->
-        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="content-wrapper">
-                <!-- Video Container -->
-                <div class="video-container">
-                    <div class="video-placeholder">Image Placeholder</div>
-                </div>
-
-                <!-- Page Title -->
-                <h1 class="page-title">A Quick Start Guide to Online Membership Application</h1>
-
-                <!-- Content Sections -->
-                <div class="content-section">
-                    <h2 class="section-title">How to apply</h2>
-                    <div class="section-content">
-                        <ul class="content-list">
-                            <li>Personal Information</li>
-                            <li>Document Required</li>
-                            <li>Agreement and Acknowledgement</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="content-section">
-                    <h2 class="section-title">Monitoring of Membership</h2>
-                    <div class="section-content">
-                        <ul class="content-list">
-                            <li>Tracking Code</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="content-section">
-                    <h2 class="section-title">Process of Membership Application</h2>
-                    <div class="section-content">
-                        <ul class="content-list">
-                            <li>Membership/s (to be assigned)</li>
-                            <li>Assign Tasks for Processing</li>
-                            <li>Notify Membership Application</li>
-                            <li>Approved / Disapproved</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="content-section">
-                    <h2 class="section-title">Overview</h2>
-                    <div class="section-content">
-                        <p style="color: var(--text-secondary); line-height: 1.8;">
-                            This guide provides comprehensive information about the online membership application
-                            process.
-                            Follow the steps outlined above to complete your application successfully.
-                        </p>
-                    </div>
+                <div class="nav-group-body open">
+                    <a href="#" class="nav-item active">Membership Guide</a>
+                    <a href="#" class="nav-item">Document Requirements</a>
+                    <a href="#" class="nav-item">Approval Process</a>
                 </div>
             </div>
+
+            <div class="nav-group">
+                <div class="nav-group-header" onclick="toggleGroup(this)">
+                    Troubleshooting <span class="chevron">▼</span>
+                </div>
+                <div class="nav-group-body">
+                    <a href="#" class="nav-item">Common Issues</a>
+                    <a href="#" class="nav-item">Error Codes</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="breadcrumb">Applications / Membership Guide</div>
+
+            <h1 class="page-title">A Quick Start Guide to Online Membership Application</h1>
+
+            <p>Welcome to the quick start guide. This document outlines the comprehensive steps required to complete
+                your online membership application successfully.</p>
+
+            <div class="video-box">
+                <div style="text-align:center;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">▶</div>
+                    <div>Watch Tutorial</div>
+                </div>
+            </div>
+
+            <h2>1. How to Apply</h2>
+            <p>The application process is designed to be seamless. You will need to prepare the following items before
+                starting:</p>
+            <ul>
+                <li><strong>Personal Information:</strong> Full name, address, and contact details.</li>
+                <li><strong>Documents Required:</strong> Scanned copies of valid ID and proof of billing.</li>
+                <li><strong>Agreement:</strong> Review and accept the Terms of Service.</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Pro Tip:</strong> Ensure your documents are in PDF or JPG format and do not exceed 5MB each to
+                avoid upload errors.
+            </div>
+
+            <h2>2. Monitoring Your Application</h2>
+            <p>Once submitted, you will receive a <strong>Tracking Code</strong> via email. Use this code to check your
+                status on the dashboard.</p>
+
+            <h2>3. Application Process Flow</h2>
+            <p>Here is what happens after you click submit:</p>
+            <ol style="padding-left:1.5rem; margin-bottom:1.5rem; color:var(--text-secondary);">
+                <li>System assigns your application to a review officer.</li>
+                <li>Officer verifies documents (Processing).</li>
+                <li>Notification is sent regarding Approval or Disapproval.</li>
+            </ol>
+
         </main>
     </div>
 
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">
-        <svg viewBox="0 0 24 24">
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-        </svg>
-    </button>
-
     <script>
-        function toggleSection(element) {
-            const subsection = element.nextElementSibling;
-            const toggleIcon = element.querySelector('.toggle-icon');
-
-            if (subsection.classList.contains('open')) {
-                subsection.classList.remove('open');
-                toggleIcon.classList.remove('open');
-            } else {
-                subsection.classList.add('open');
-                toggleIcon.classList.add('open');
-            }
+        function toggleGroup(header) {
+            const body = header.nextElementSibling;
+            body.classList.toggle('open');
+            // Rotate chevron logic
+            const chevron = header.querySelector('.chevron');
+            chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-        }
-
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        }
-
-        // Close sidebar when clicking on a navigation item (mobile)
-        document.querySelectorAll('.nav-subsection-item').forEach(item => {
-            item.addEventListener('click', function () {
-                if (window.innerWidth <= 968) {
-                    closeSidebar();
-                }
-            });
-        });
-
-        // Handle window resize
-        let resizeTimer;
-        window.addEventListener('resize', function () {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function () {
-                if (window.innerWidth > 968) {
-                    closeSidebar();
-                }
-            }, 250);
-        });
     </script>
+
 </body>
 
 </html>

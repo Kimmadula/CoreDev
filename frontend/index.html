@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="/coreDev.png" />
+    <link rel="icon" type="image/svg+xml" href="/coreDev.png">
     <title>Knowledge Base</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
@@ -441,7 +441,7 @@
             <h2 class="section-title">Product</h2>
 
             <div class="products-grid">
-                <a href="#help-desk" class="product-card">
+                <a href="helpdesk.html" class="product-card">
                     <div class="product-icon">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
@@ -567,7 +567,6 @@
     </footer>
 
     <script>
-        // Search functionality
         const searchInput = document.querySelector('input[type="search"]');
         const productCards = document.querySelectorAll('.product-card');
 
@@ -586,7 +585,6 @@
             });
         });
 
-        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -594,12 +592,10 @@
 
                 if (href !== '#') {
                     console.log(`Navigating to ${href}`);
-                    // You can add actual navigation logic here
                 }
             });
         });
 
-        // Add hover sound effect (optional enhancement)
         productCards.forEach(card => {
             card.addEventListener('mouseenter', () => {
                 card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
