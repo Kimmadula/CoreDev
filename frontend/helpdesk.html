@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership Application Guide</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Crimson+Pro:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #c8c8cc;
+            --sidebar-bg: #d4d4d8;
+            --header-bg: #6b6b6f;
+            --content-bg: #f5f5f7;
+            --card-bg: #636366;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-light: #ffffff;
+            --accent-orange: #ff6b35;
+            --accent-blue: #4a90e2;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: var(--content-bg);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--header-bg);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            box-shadow: var(--shadow-md);
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--text-light);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-primary);
+        }
+
+        .company-name {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            padding: 2rem 1rem;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 60px;
+            bottom: 0;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--accent-blue);
+        }
+
+        .nav-section-header:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-section-header.active {
+            background: var(--accent-blue);
+            color: var(--text-light);
+        }
+
+        .toggle-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .toggle-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+
+        .nav-subsection {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-subsection.open {
+            max-height: 500px;
+        }
+
+        .nav-subsection-item {
+            padding: 0.65rem 1rem 0.65rem 2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-left: 3px solid transparent;
+        }
+
+        .nav-subsection-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+            border-left-color: var(--accent-blue);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem;
+            background: var(--content-bg);
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Video Placeholder */
+        .video-container {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-md);
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .video-placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.5s ease-out both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .content-section:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .content-section:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .content-section:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-content {
+            padding-left: 1.5rem;
+        }
+
+        .content-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .content-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .content-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 1rem;
+            width: 6px;
+            height: 6px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .mobile-menu-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 200;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .header {
+                padding: 0 1.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            .main-content {
+                padding: 1.5rem 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-width: 320px;
+            }
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 150;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+                </svg>
+            </div>
+            <div class="company-name">coreDev Solutions Inc.</div>
+        </div>
+    </header>
+
+    <!-- Layout -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-section-header active" onclick="toggleSection(this)">
+                        <span>Sample Section</span>
+                        <div class="toggle-icon open">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="nav-subsection open">
+                        <div class="nav-subsection-item">Sample Subsection</div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-header" onclick="toggleSection(this)">
+                        <span>Sample Section</span>
+                        <div class="toggle-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="nav-subsection">
+                        <div class="nav-subsection-item">Sample Subsection</div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Sidebar Overlay (for mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <!-- Video Container -->
+                <div class="video-container">
+                    <div class="video-placeholder">Image Placeholder</div>
+                </div>
+
+                <!-- Page Title -->
+                <h1 class="page-title">A Quick Start Guide to Online Membership Application</h1>
+
+                <!-- Content Sections -->
+                <div class="content-section">
+                    <h2 class="section-title">How to apply</h2>
+                    <div class="section-content">
+                        <ul class="content-list">
+                            <li>Personal Information</li>
+                            <li>Document Required</li>
+                            <li>Agreement and Acknowledgement</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2 class="section-title">Monitoring of Membership</h2>
+                    <div class="section-content">
+                        <ul class="content-list">
+                            <li>Tracking Code</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2 class="section-title">Process of Membership Application</h2>
+                    <div class="section-content">
+                        <ul class="content-list">
+                            <li>Membership/s (to be assigned)</li>
+                            <li>Assign Tasks for Processing</li>
+                            <li>Notify Membership Application</li>
+                            <li>Approved / Disapproved</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2 class="section-title">Overview</h2>
+                    <div class="section-content">
+                        <p style="color: var(--text-secondary); line-height: 1.8;">
+                            This guide provides comprehensive information about the online membership application
+                            process.
+                            Follow the steps outlined above to complete your application successfully.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+        </svg>
+    </button>
+
+    <script>
+        function toggleSection(element) {
+            const subsection = element.nextElementSibling;
+            const toggleIcon = element.querySelector('.toggle-icon');
+
+            if (subsection.classList.contains('open')) {
+                subsection.classList.remove('open');
+                toggleIcon.classList.remove('open');
+            } else {
+                subsection.classList.add('open');
+                toggleIcon.classList.add('open');
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        // Close sidebar when clicking on a navigation item (mobile)
+        document.querySelectorAll('.nav-subsection-item').forEach(item => {
+            item.addEventListener('click', function () {
+                if (window.innerWidth <= 968) {
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                if (window.innerWidth > 968) {
+                    closeSidebar();
+                }
+            }, 250);
+        });
+    </script>
+</body>
+
+</html>
