@@ -387,48 +387,99 @@
                         <span style="cursor:pointer; text-decoration:underline;" onclick="switchView('listView')">← Back
                             to List</span>
                     </div>
-                    <h1 class="page-title">Edit: Homepage Hero</h1>
+                    <h1 class="page-title">Edit Article: Help Desk Guide</h1>
                 </div>
                 <div style="display:flex;">
-                    <button class="btn-secondary" onclick="switchView('listView')">Cancel</button>
+                    <a href="helpdesk.html" target="_blank" class="btn-secondary"
+                        style="text-decoration:none; display:inline-flex; align-items:center;">
+                        <span style="margin-right:5px;">👁️</span> View Live Page
+                    </a>
                     <button class="btn-primary" onclick="switchView('listView'); alert('Changes Saved!');">Save
                         Changes</button>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="form-group">
-                    <label>Main Title</label>
-                    <input type="text" value="Knowledge Base">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+                <!-- Left Column: Editor -->
+                <div class="card">
+                    <h2
+                        style="font-size:1.1rem; margin-bottom:1rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">
+                        Content Editor</h2>
+
+                    <div class="form-group">
+                        <label>Article Title</label>
+                        <input type="text" value="A Quick Start Guide to Help Desk">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Main Content</label>
+                        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.5rem;">Use the editor to
+                            add
+                            text, headings (H2, H3), and images. This auto-generates the Table of Contents.</p>
+
+                        <div class="editor-container">
+                            <div class="editor-toolbar">
+                                <button class="toolbar-btn" title="Bold"><strong>B</strong></button>
+                                <button class="toolbar-btn" title="Italic"><em>I</em></button>
+                                <button class="toolbar-btn" title="Heading 2">H2</button>
+                                <button class="toolbar-btn" title="Heading 3">H3</button>
+                                <div style="width:1px; background:var(--border); margin:0 5px;"></div>
+                                <button class="toolbar-btn" title="Insert Image">🖼️</button>
+                                <button class="toolbar-btn" title="Link">🔗</button>
+                                <button class="toolbar-btn" title="Bullet List">List</button>
+                            </div>
+                            <div class="editor-content" contenteditable="true"
+                                style="white-space: pre-wrap; font-size:0.9rem;">
+                                <p>Welcome to the Help Desk!</p>
+                                <p>Help Desk is a web-based application...</p>
+                                <h2>Concerns</h2>
+                                <h3>New Concern</h3>
+                                <p>To create a new concern/ticket...</p>
+                                <div style="background:#f3f4f6; border:1px solid #ddd; padding:5px; font-size:0.8rem;">
+                                    [Image: Concern.png]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sidebar Category</label>
+                        <select style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px;">
+                            <option>Getting Started</option>
+                            <option>Troubleshooting</option>
+                            <option>Account Management</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Description (Rich Text)</label>
-                    <div class="editor-container">
-                        <div class="editor-toolbar">
-                            <button class="toolbar-btn">B</button>
-                            <button class="toolbar-btn">I</button>
-                            <button class="toolbar-btn">U</button>
-                            <div style="width:1px; background:var(--border); margin:0 5px;"></div>
-                            <button class="toolbar-btn">H1</button>
-                            <button class="toolbar-btn">H2</button>
-                            <button class="toolbar-btn">🔗</button>
-                        </div>
-                        <div class="editor-content" contenteditable="true">
-                            Explore and learn more about our products.
+                <!-- Right Column: Live Preview -->
+                <div class="card" style="background:#f9fafb; border:1px solid var(--border);">
+                    <h2
+                        style="font-size:1.1rem; margin-bottom:1rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">
+                        Live Preview</h2>
+
+                    <div
+                        style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:2rem; height:500px; overflow-y:auto; font-family:'DM Sans', sans-serif;">
+                        <h1
+                            style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:700; margin-bottom:1rem;">
+                            A Quick Start Guide to Help Desk</h1>
+                        <p style="color:#4a4a4a; margin-bottom:1rem;">Welcome to the Help Desk!</p>
+                        <p style="color:#4a4a4a; margin-bottom:1rem;">Help Desk is a web-based application...</p>
+
+                        <h2
+                            style="font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:600; margin-top:2rem; margin-bottom:1rem;">
+                            Concerns</h2>
+                        <h3
+                            style="font-family:'Outfit',sans-serif; font-size:1.2rem; font-weight:600; margin-top:1.5rem; margin-bottom:0.5rem;">
+                            New Concern</h3>
+                        <p style="color:#4a4a4a; margin-bottom:1rem;">To create a new concern/ticket...</p>
+                        <div
+                            style="width:100%; aspect-ratio:16/9; background:#111827; border-radius:8px; display:flex; align-items:center; justify-content:center; color:white; margin-bottom:1rem;">
+                            <img src="Concern.png" alt="Preview" style="max-width:100%; max-height:100%;">
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Background Image</label>
-                    <div class="image-preview">
-                        <div style="margin-bottom:10px;">📸</div>
-                        <span class="upload-text">Click to upload or drag image here</span>
-                        <span style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">Recommended:
-                            1920x600px</span>
-                    </div>
-                </div>
             </div>
         </div>
 

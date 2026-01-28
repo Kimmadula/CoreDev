@@ -332,190 +332,309 @@
 
 <body>
 
-    <header class="header">
-        <a href="index.html" class="logo-section">
-            <img src="coreDev.png" class="logo-icon" alt="Logo">
-            <div class="company-name">coreDev Solutions Inc.</div>
-        </a>
-        <div class="header-actions">
-            <a href="index.html" class="btn-simple">Home</a>
+    <!-- Mock Admin Toolbar -->
 
-            <div class="dropdown">
-                <span class="btn-simple">Products ▼</span>
-                <div class="dropdown-content">
-                    <a href="#" class="dropdown-item">Help Desk</a>
-                    <a href="#" class="dropdown-item">Membership Application </a>
-                    <a href="#" class="dropdown-item">Electronix Web</a>
-                    <a href="#" class="dropdown-item">Web-Based Queueing System</a>
-                    <a href="#" class="dropdown-item">IACCS 2013</a>
-                    <a href="#" class="dropdown-item">OrangepayPlus</a>
-                    <a href="#" class="dropdown-item">Archive Box</a>
-                    <a href="#" class="dropdown-item">Activity Builder</a>
-                    <a href="#" class="dropdown-item">Farm Pro Management</a>
-                    <a href="#" class="dropdown-item">E-Service</a>
-                    <a href="#" class="dropdown-item">E-Collect</a>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <div class="layout">
-        <aside class="sidebar">
-            <div class="sidebar-title">Help Desk</div>
-
-            <div class="nav-group">
-                <div class="nav-group-header" onclick="toggleGroup(this)">
-                    Getting Started <span class="chevron">▼</span>
-                </div>
-                <div class="nav-group-body open">
-                    <a href="#" class="nav-item">A Quick Start Guide to Help Desk</a>
-                </div>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            <div class="breadcrumb">Applications / Membership Guide</div>
-
-            <h1 class="page-title">A Quick Start Guide to Help Desk</h1>
-
-            <p>Welcome to the Help Desk!</p>
-
-            <p style="text-indent: 2em; text-align: justify;">Help Desk is a web-based application that is used to
-                create automated concerns. It is used when a member has concerns about their loan status application, 
-                the status of profile update, ATM loan issues, and many more. Through this application,
-                members can submit their concerns and the staff can respond to them.</p>
-
-            <h2>Concerns</h2>
-
-            <h3>New Concern</h3>
-            <p>To create a new concern/ticket, a member must fill all the required fields needed.</p>
-
-            <div class="info-box">
-                <strong>NOTE:</strong> Only registered members can create a concern/ticket.
-            </div>
-
-            <div class="img-box">
-                <img src="Concern.png" alt="Help Desk Tutorial">
-            </div>
-
-            <h3>Track Concerns</h3>
-            <p style="text-indent: 2em; text-align: justify;">Every concern created in the system will generate a tracking code 
-                or ticket number in order for the members to easily monitor their concerns or issues.</p>
-
-            <div class="img-box">
-                <img src="track1.png" alt="Help Desk Tutorial">
-            </div>
-
-            <p style="text-align: justify;">To monitor your concern you must click the ticket number button.</p>
-
-            <div class="img-box">
-                <img src="track2.png" alt="Help Desk Tutorial">
-            </div>
-
-            <p style="text-indent: 2em; text-align: justify;">You will be redirected to this page, and you must input here 
-                the tracking code/ticket number that the system was generated and sent via SMS and email, and then click submit.</p>
-
-            <div class="img-box">
-                <img src="track3.png" alt="Help Desk Tutorial">
-            </div>
-
-            <p style="text-indent: 2em; text-align: justify;">After submitting the correct tracking code/ticket number, you will be 
-                redirected to this page. On this page, you can monitor the status of your concern and the designated team member who 
-                will process your concern. You can also leave a message and upload an image or file.</p>
-
-            <h2>Admin and Staffs</h2>
-            <p style="text-indent: 2em; text-align: justify;">Admin, Team leaders/staff, and Team members have their credentials to 
-                log in to the helpdesk application in order for them to view the dashboard, monitor the concerns, and process the issue
-                that is being raised by the member.</p>
-
-            <h3>Login</h3>
-            <p>Must provide email and password to log in with the system.</p>
-
-            <div class="img-box">
-                <img src="login.png" alt="Help Desk Tutorial">
-            </div>
-
-            <h3>Dashboard</h3>
-            <p style="text-indent: 2em; text-align: justify;">Only Admin and Team leaders can view the dashboard. This dashboard 
-                contains charts and analyses of the concerns that were being raised by the member.</p>
-
-            <div class="img-box">
-                <img src="dashboard.png" alt="Help Desk Tutorial">
-            </div>
-
-            <div class="img-box">
-                <img src="dashboard2.png" alt="Help Desk Tutorial">
-            </div>
-
-            <h3>Lists of Concerns</h3>
-            <p style="text-indent: 2em; text-align: justify;">This is the list of concerns being raised by the member. In order to 
-                view a concern, you must click one concern.</p>
-
-            <div class="img-box">
-                <img src="list.png" alt="Help Desk Tutorial">
-            </div>
-
-            <h2>Tickets</h2>
-
-            <h3>Assign Tickets</h3>
-            <p style="text-indent: 2em; text-align: justify;">After clicking one concern, you will be redirected to this page. On this 
-                page, a team leader/admin can assign a team member who will process the issue or concern, they can also add 
-                participants, select a due date, and can leave a message with a file or image upload.</p>
-
-            <div class="img-box">
-                <img src="assign.png" alt="Help Desk Tutorial">
-            </div>
-
-            <h3>Process Tickets</h3>
-            <p style="text-indent: 2em; text-align: justify;">After the ticket has been assigned to the designated team member, the 
-                status of the concern/ticket will be changed to <strong>In Process</strong>, and will send a notification via SMS and 
-                email to the member.</p>
-
-            <div class="img-box">
-                <img src="process.png" alt="Help Desk Tutorial">
-            </div>
-
-            <p> A short overview of how the Help Desk application works.</p>
-
-            
-            <h3>Resolve Tickets</h3>
-            <p style="text-indent: 2em; text-align: justify;">After the concern was processed, it is now ready to be solved, and in 
-                order for the ticket/concern to be resolved just click the <strong>In Process</strong>, in the upper right corner, then it will show 
-                a dropdown with the list of options. Just select <strong>Resolved</strong>, then click the <strong>Check</strong> button and done!</p>
-
-            <div class="img-box">
-                <img src="resolved.png" alt="Help Desk Tutorial">
-            </div>
-
-            <p style="text-indent: 2em; text-align: justify;">After the concern has been resolved it will again send a notification via SMS and email 
-                to the member to let them know that their concerns have been resolved.</p>
-
-            <h2>Flowchart</h2>
-
-            <div class="img-box">
-                <img src="flowchart.png" alt="Help Desk Tutorial">
-            </div>
-
-            <h2>Overview</h2>
-            <p> A short overview of how the Help Desk application works.</p>
-
-            <div class="img-box">
-                <img src="overview.png" alt="Help Desk Tutorial">
-            </div>
-
-        </main>
+    <!-- Scenario Overlay Guide -->
+    <div id="scenarioGuide"
+        style="display:none; position:fixed; top:80px; right:20px; width:250px; background:white; padding:15px; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.2); border-left:4px solid #FF6C00; z-index:900;">
+        <h4 style="margin:0 0 10px 0; font-family:'Outfit',sans-serif;">Try This Scenario:</h4>
+        <ol style="padding-left:20px; font-size:0.9rem; color:#444; margin:0;">
+            <li style="margin-bottom:8px;">Click <strong>"New Concern"</strong> title and rename it to <em>"Submit
+                    Issue"</em>.</li>
+            <li style="margin-bottom:8px;">Try to press <strong>ENTER</strong> to create a new paragraph. <span
+                    style="color:red; font-size:0.8em;">(Should Block)</span></li>
+            <li style="margin-bottom:8px;">Click the <strong>Image</strong> below it. <span
+                    style="color:green; font-size:0.8em;">(Should Swap)</span></li>
+            <li>Try to <strong>Drag</strong> the image. <span style="color:red; font-size:0.8em;">(Should fail)</span>
+            </li>
+        </ol>
     </div>
 
     <script>
-        function toggleGroup(header) {
-            const body = header.nextElementSibling;
-            body.classList.toggle('open');
-            // Rotate chevron logic
-            const chevron = header.querySelector('.chevron');
-            chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+        function toggleEditMode() {
+            const isEditing = document.getElementById('editToggle').checked;
+            const editableElements = document.querySelectorAll('h1, h2, h3, p, li');
+            const images = document.querySelectorAll('img');
+            const guide = document.getElementById('scenarioGuide');
+
+            guide.style.display = isEditing ? 'block' : 'none';
+
+            editableElements.forEach(el => {
+                el.contentEditable = isEditing;
+                if (isEditing) {
+                    el.classList.add('editable-active');
+
+                    // RESTRICTION 1: Block Layout Changes (Enter Key)
+                    el.onkeydown = function (e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            alert("⛔ RESTRICTED: You cannot add new lines or breaks. \n\nThis keeps the design perfect.");
+                        }
+                    };
+                } else {
+                    el.classList.remove('editable-active');
+                    el.onkeydown = null;
+                }
+            });
+
+            // RESTRICTION 2: Handle Images
+            images.forEach(img => {
+                // Exclude the logo image from being editable/swappable
+                if (img.classList.contains('logo-icon')) {
+                    return;
+                }
+
+                if (isEditing) {
+                    img.style.cursor = "pointer";
+                    img.style.border = "2px dashed #FF6C00";
+
+                    img.onclick = function (e) {
+                        e.preventDefault();
+                        // Simulate Image Swap
+                        const newUrl = prompt("📷 CHANGE IMAGE\n\nEnter new image URL (or leave empty to cancel):", img.src);
+                        if (newUrl) {
+                            img.src = newUrl;
+                            alert("✅ Image Updated!");
+                        }
+                    };
+
+                    // Block Dragging
+                    img.ondragstart = function (e) {
+                        e.preventDefault();
+                        alert("⛔ RESTRICTED: You cannot move images. \n\nThe layout is fixed.");
+                        return false;
+                    }
+                } else {
+                    img.style.cursor = "default";
+                    img.style.border = "none";
+                    img.onclick = null;
+                    img.ondragstart = null; // Clear drag start handler
+                }
+            });
+
+            if (isEditing) {
+                // alert("Scenario Mode: ON\n\nTry to follow the steps in the box!");
+            }
         }
     </script>
+    </head>
 
-</body>
+    <body>
+
+        <header class="header">
+            <a href="index.html" class="logo-section">
+                <img src="coreDev.png" class="logo-icon" alt="Logo">
+                <div class="company-name">coreDev Solutions Inc.</div>
+            </a>
+            <div class="header-actions">
+                <a href="index.html" class="btn-simple">Home</a>
+
+                <div class="dropdown">
+                    <span class="btn-simple">Products ▼</span>
+                    <div class="dropdown-content">
+                        <a href="#" class="dropdown-item">Help Desk</a>
+                        <a href="#" class="dropdown-item">Membership Application </a>
+                        <a href="#" class="dropdown-item">Electronix Web</a>
+                        <a href="#" class="dropdown-item">Web-Based Queueing System</a>
+                        <a href="#" class="dropdown-item">IACCS 2013</a>
+                        <a href="#" class="dropdown-item">OrangepayPlus</a>
+                        <a href="#" class="dropdown-item">Archive Box</a>
+                        <a href="#" class="dropdown-item">Activity Builder</a>
+                        <a href="#" class="dropdown-item">Farm Pro Management</a>
+                        <a href="#" class="dropdown-item">E-Service</a>
+                        <a href="#" class="dropdown-item">E-Collect</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-title">Help Desk</div>
+
+                <div class="nav-group">
+                    <div class="nav-group-header" onclick="toggleGroup(this)">
+                        Getting Started <span class="chevron">▼</span>
+                    </div>
+                    <div class="nav-group-body open">
+                        <a href="#" class="nav-item">A Quick Start Guide to Help Desk</a>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="breadcrumb">Applications / Membership Guide</div>
+
+                <h1 class="page-title">A Quick Start Guide to Help Desk</h1>
+
+                <p>Welcome to the Help Desk!</p>
+
+                <p style="text-indent: 2em; text-align: justify;">Help Desk is a web-based application that is used to
+                    create automated concerns. It is used when a member has concerns about their loan status
+                    application,
+                    the status of profile update, ATM loan issues, and many more. Through this application,
+                    members can submit their concerns and the staff can respond to them.</p>
+
+                <h2>Concerns</h2>
+
+                <h3>New Concern</h3>
+                <p>To create a new concern/ticket, a member must fill all the required fields needed.</p>
+
+                <div class="info-box">
+                    <strong>NOTE:</strong> Only registered members can create a concern/ticket.
+                </div>
+
+                <div class="img-box">
+                    <img src="Concern.png" alt="Help Desk Tutorial">
+                </div>
+
+                <h3>Track Concerns</h3>
+                <p style="text-indent: 2em; text-align: justify;">Every concern created in the system will generate a
+                    tracking code
+                    or ticket number in order for the members to easily monitor their concerns or issues.</p>
+
+                <div class="img-box">
+                    <img src="track1.png" alt="Help Desk Tutorial">
+                </div>
+
+                <p style="text-align: justify;">To monitor your concern you must click the ticket number button.</p>
+
+                <div class="img-box">
+                    <img src="track2.png" alt="Help Desk Tutorial">
+                </div>
+
+                <p style="text-indent: 2em; text-align: justify;">You will be redirected to this page, and you must
+                    input
+                    here
+                    the tracking code/ticket number that the system was generated and sent via SMS and email, and then
+                    click
+                    submit.</p>
+
+                <div class="img-box">
+                    <img src="track3.png" alt="Help Desk Tutorial">
+                </div>
+
+                <p style="text-indent: 2em; text-align: justify;">After submitting the correct tracking code/ticket
+                    number,
+                    you will be
+                    redirected to this page. On this page, you can monitor the status of your concern and the designated
+                    team member who
+                    will process your concern. You can also leave a message and upload an image or file.</p>
+
+                <h2>Admin and Staffs</h2>
+                <p style="text-indent: 2em; text-align: justify;">Admin, Team leaders/staff, and Team members have their
+                    credentials to
+                    log in to the helpdesk application in order for them to view the dashboard, monitor the concerns,
+                    and
+                    process the issue
+                    that is being raised by the member.</p>
+
+                <h3>Login</h3>
+                <p>Must provide email and password to log in with the system.</p>
+
+                <div class="img-box">
+                    <img src="login.png" alt="Help Desk Tutorial">
+                </div>
+
+                <h3>Dashboard</h3>
+                <p style="text-indent: 2em; text-align: justify;">Only Admin and Team leaders can view the dashboard.
+                    This
+                    dashboard
+                    contains charts and analyses of the concerns that were being raised by the member.</p>
+
+                <div class="img-box">
+                    <img src="dashboard.png" alt="Help Desk Tutorial">
+                </div>
+
+                <div class="img-box">
+                    <img src="dashboard2.png" alt="Help Desk Tutorial">
+                </div>
+
+                <h3>Lists of Concerns</h3>
+                <p style="text-indent: 2em; text-align: justify;">This is the list of concerns being raised by the
+                    member.
+                    In order to
+                    view a concern, you must click one concern.</p>
+
+                <div class="img-box">
+                    <img src="list.png" alt="Help Desk Tutorial">
+                </div>
+
+                <h2>Tickets</h2>
+
+                <h3>Assign Tickets</h3>
+                <p style="text-indent: 2em; text-align: justify;">After clicking one concern, you will be redirected to
+                    this
+                    page. On this
+                    page, a team leader/admin can assign a team member who will process the issue or concern, they can
+                    also
+                    add
+                    participants, select a due date, and can leave a message with a file or image upload.</p>
+
+                <div class="img-box">
+                    <img src="assign.png" alt="Help Desk Tutorial">
+                </div>
+
+                <h3>Process Tickets</h3>
+                <p style="text-indent: 2em; text-align: justify;">After the ticket has been assigned to the designated
+                    team
+                    member, the
+                    status of the concern/ticket will be changed to <strong>In Process</strong>, and will send a
+                    notification via SMS and
+                    email to the member.</p>
+
+                <div class="img-box">
+                    <img src="process.png" alt="Help Desk Tutorial">
+                </div>
+
+                <p> A short overview of how the Help Desk application works.</p>
+
+
+                <h3>Resolve Tickets</h3>
+                <p style="text-indent: 2em; text-align: justify;">After the concern was processed, it is now ready to be
+                    solved, and in
+                    order for the ticket/concern to be resolved just click the <strong>In Process</strong>, in the upper
+                    right corner, then it will show
+                    a dropdown with the list of options. Just select <strong>Resolved</strong>, then click the
+                    <strong>Check</strong> button and done!
+                </p>
+
+                <div class="img-box">
+                    <img src="resolved.png" alt="Help Desk Tutorial">
+                </div>
+
+                <p style="text-indent: 2em; text-align: justify;">After the concern has been resolved it will again send
+                    a
+                    notification via SMS and email
+                    to the member to let them know that their concerns have been resolved.</p>
+
+                <h2>Flowchart</h2>
+
+                <div class="img-box">
+                    <img src="flowchart.png" alt="Help Desk Tutorial">
+                </div>
+
+                <h2>Overview</h2>
+                <p> A short overview of how the Help Desk application works.</p>
+
+                <div class="img-box">
+                    <img src="overview.png" alt="Help Desk Tutorial">
+                </div>
+
+            </main>
+        </div>
+
+        <script>
+            function toggleGroup(header) {
+                const body = header.nextElementSibling;
+                body.classList.toggle('open');
+                // Rotate chevron logic
+                const chevron = header.querySelector('.chevron');
+                chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        </script>
+
+    </body>
 
 </html>
