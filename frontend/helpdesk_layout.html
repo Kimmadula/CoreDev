@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Helpdesk — Sections & Articles</title>
+  <style>
+    :root{--sidebar-width:340px;--gap:24px;--accent:#2aa44a}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    .container{display:flex;gap:var(--gap);height:100vh;padding:20px;box-sizing:border-box}
+    .sidebar{width:var(--sidebar-width);min-width:220px;border-right:1px solid #eee;padding-right:18px;overflow:auto}
+    .content{flex:1;padding-left:18px;overflow:auto}
+    .product-title{font-size:20px;font-weight:600;margin:0 0 12px}
+    .section{background:#fbfbfb;border-radius:6px;padding:8px 12px;margin-bottom:10px}
+    .section-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0}
+    .section-title{font-weight:600}
+    .articles{margin-top:8px;padding-left:8px}
+    .article-item{padding:8px 6px;border-radius:6px;cursor:pointer;color:#333}
+    .article-item.active{background:linear-gradient(90deg,#f1fff6,#fff);border-left:4px solid var(--accent)}
+    .article-item:hover{background:#f7f7f7}
+    h1.article-title{font-size:28px;margin-top:0}
+    .article-body{line-height:1.7;color:#222}
+    .empty{color:#666;padding:24px;text-align:center}
+    @media (max-width:900px){.container{flex-direction:column}.sidebar{width:100%;border-right:none;border-bottom:1px solid #eee;padding-bottom:12px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div id="productMeta">
+        <div class="product-title" id="productTitle">Loading…</div>
+      </div>
+      <div id="sectionsList">
+        <div class="empty">Loading sections…</div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div id="articleArea">
+        <div class="empty">Select a section → article on the left.</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+
+    function qs(name, fallback) {
+      const params = new URLSearchParams(location.search);
+      return params.get(name) || fallback;
+    }
+
+    const productSlug = qs('product', 'help-desk');
+
+    async function fetchJson(url){
+      const res = await fetch(url, {cache: 'no-store'});
+      if(!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+
+    async function loadProduct(slug){
+      try{
+        const product = await fetchJson(`${API_BASE}/products/${encodeURIComponent(slug)}`);
+        document.getElementById('productTitle').textContent = product.name || product.title || 'Product';
+
+        const sections = await fetchJson(`${API_BASE}/products/${encodeURIComponent(slug)}/sections`);
+        renderSections(sections);
+      }catch(err){
+        document.getElementById('sectionsList').innerHTML = `<div class="empty">Failed to load product or sections.</div>`;
+        document.getElementById('articleArea').innerHTML = `<div class="empty">${err}</div>`;
+        console.error(err);
+      }
+    }
+
+    function renderSections(sections){
+      const container = document.getElementById('sectionsList');
+      if(!sections || sections.length===0){
+        container.innerHTML = `<div class="empty">No sections found for this product.</div>`;
+        return;
+      }
+      container.innerHTML = '';
+      sections.forEach(sec => {
+        const s = document.createElement('div'); s.className = 'section';
+        const header = document.createElement('div'); header.className = 'section-header';
+        const title = document.createElement('div'); title.className = 'section-title'; title.textContent = sec.name || sec.title || sec.slug;
+        const chevron = document.createElement('div'); chevron.textContent = '\u25BC'; chevron.style.opacity = '0.5';
+        header.appendChild(title); header.appendChild(chevron);
+        s.appendChild(header);
+
+        const articlesWrap = document.createElement('div'); articlesWrap.className = 'articles';
+        s.appendChild(articlesWrap);
+
+        let loaded = false;
+        header.addEventListener('click', async ()=>{
+          if(!loaded){
+            articlesWrap.innerHTML = '<div class="empty">Loading articles…</div>';
+            try{
+              const articles = await fetchJson(`${API_BASE}/sections/${encodeURIComponent(sec.slug)}/articles`);
+              renderArticlesList(articles, articlesWrap);
+              loaded = true; chevron.textContent = '\u25B2';
+            }catch(e){
+              articlesWrap.innerHTML = `<div class="empty">Failed to load articles.</div>`;
+              console.error(e);
+            }
+          } else {
+            // toggle collapse
+            const isHidden = articlesWrap.style.display === 'none';
+            articlesWrap.style.display = isHidden ? '' : 'none';
+            chevron.textContent = isHidden ? '\u25B2' : '\u25BC';
+          }
+        });
+
+        container.appendChild(s);
+      });
+
+      // auto-open first section
+      const firstHeader = container.querySelector('.section .section-header');
+      if(firstHeader) firstHeader.click();
+    }
+
+    function renderArticlesList(articles, target){
+      if(!articles || articles.length===0){
+        target.innerHTML = `<div class="empty">No articles in this section.</div>`; return;
+      }
+      target.innerHTML = '';
+      articles.forEach(a=>{
+        const el = document.createElement('div');
+        el.className = 'article-item';
+        el.textContent = a.title || a.name || a.slug;
+        el.dataset.slug = a.slug;
+        el.addEventListener('click', ()=>{
+          // remove previous active
+          document.querySelectorAll('.article-item.active').forEach(n=>n.classList.remove('active'));
+          el.classList.add('active');
+          loadArticle(a.slug);
+        });
+        target.appendChild(el);
+      });
+
+      // click first article automatically
+      const first = target.querySelector('.article-item');
+      if(first) first.click();
+    }
+
+    async function loadArticle(slug){
+      try{
+        const art = await fetchJson(`${API_BASE}/articles/${encodeURIComponent(slug)}`);
+        document.getElementById('articleArea').innerHTML = `
+          <article>
+            <h1 class="article-title">${escapeHtml(art.title || art.name || '')}</h1>
+            <div class="article-body">${art.content || art.description || ''}</div>
+          </article>`;
+      }catch(e){
+        document.getElementById('articleArea').innerHTML = `<div class="empty">Failed to load article.</div>`;
+        console.error(e);
+      }
+    }
+
+    // minimal escaping for titles
+    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // start
+    loadProduct(productSlug);
+  </script>
+</body>
+</html>
