@@ -40,10 +40,10 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div>
+    <div style={{ minHeight: "100vh", padding: "24px", background: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)", color: "#1f2937", fontFamily: "Inter, system-ui, sans-serif" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h2>Admin Dashboard</h2>
-        <button 
+        <button
           onClick={handleLogout}
           style={{ padding: "8px 12px", backgroundColor: "#dc3545", color: "white", border: "none", borderRadius: 4, cursor: "pointer" }}
         >
@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
           <div style={{ marginBottom: 32 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <h3 style={{ margin: 0 }}>Quick Actions</h3>
-              <Link 
+              <Link
                 to="/admin/guide"
                 style={{
                   padding: "8px 16px",
@@ -76,7 +76,7 @@ export default function AdminDashboardPage() {
               </Link>
             </div>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <Link 
+              <Link
                 to="/admin/products"
                 style={{
                   padding: "12px 24px",
@@ -89,7 +89,7 @@ export default function AdminDashboardPage() {
               >
                 Manage Products
               </Link>
-              <Link 
+              <Link
                 to="/admin/products"
                 style={{
                   padding: "12px 24px",
@@ -102,7 +102,7 @@ export default function AdminDashboardPage() {
               >
                 Manage Sections
               </Link>
-              <Link 
+              <Link
                 to="/admin/products"
                 style={{
                   padding: "12px 24px",
@@ -122,7 +122,7 @@ export default function AdminDashboardPage() {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <h3>Products Overview</h3>
-              <Link 
+              <Link
                 to="/admin/products"
                 style={{ textDecoration: "none", color: "#0066cc" }}
               >
@@ -135,11 +135,11 @@ export default function AdminDashboardPage() {
             ) : (
               <div style={{ display: "grid", gap: 16 }}>
                 {products.map((product) => (
-                  <div 
-                    key={product.id} 
-                    style={{ 
-                      border: "1px solid #ddd", 
-                      padding: 16, 
+                  <div
+                    key={product.id}
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: 16,
                       borderRadius: 8,
                       backgroundColor: "white"
                     }}
@@ -147,7 +147,7 @@ export default function AdminDashboardPage() {
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
                       <div style={{ flex: 1 }}>
                         <h4 style={{ margin: "0 0 8px 0" }}>
-                          <Link 
+                          <Link
                             to={`/admin/products/${product.id}/sections`}
                             style={{ textDecoration: "none", color: "inherit" }}
                           >
@@ -173,7 +173,7 @@ export default function AdminDashboardPage() {
                           </span>
                         </div>
                       </div>
-                      <Link 
+                      <Link
                         to={`/admin/products/${product.id}/sections`}
                         style={{
                           padding: "6px 12px",

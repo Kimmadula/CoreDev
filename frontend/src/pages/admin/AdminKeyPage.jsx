@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 export default function AdminKeyPage() {
   const [key, setKey] = useState(localStorage.getItem("ADMIN_KEY") || "");
+  const [showPassword, setShowPassword] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isHovering, setIsHovering] = useState(null);
   const nav = useNavigate();
@@ -33,13 +34,14 @@ export default function AdminKeyPage() {
   ];
 
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      width: "100%", 
-      background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)", 
-      padding: isMobile ? "1.5rem" : "2rem", 
+    <div style={{
+      minHeight: "100vh",
+      width: "100%",
+      background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+      padding: isMobile ? "1.5rem" : "2rem",
       fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      position: "relative"
+      position: "relative",
+      overflowX: "hidden"
     }}>
       {/* Animated background circles */}
       <div style={{ position: "absolute", top: "10%", left: "10%", width: "300px", height: "300px", background: "rgba(255, 255, 255, 0.1)", borderRadius: "50%", filter: "blur(60px)", animation: "float 8s ease-in-out infinite" }} />
@@ -60,12 +62,12 @@ export default function AdminKeyPage() {
         .fade-in-delay-3 { animation: slideUp 0.6s ease-out 0.3s forwards; opacity: 0; }
       `}</style>
 
-      <div style={{ 
-        background: "rgba(255, 255, 255, 0.98)", 
+      <div style={{
+        background: "rgba(255, 255, 255, 0.98)",
         backdropFilter: "blur(20px)",
-        borderRadius: "24px", 
-        padding: responsivePadding, 
-        maxWidth: "640px", 
+        borderRadius: "24px",
+        padding: responsivePadding,
+        maxWidth: "640px",
         width: "100%",
         margin: "0 auto",
         boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)",
@@ -74,35 +76,36 @@ export default function AdminKeyPage() {
       }}>
         {/* Header */}
         <div className="fade-in" style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <div style={{ 
-            width: "80px", 
-            height: "80px", 
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", 
-            borderRadius: "20px", 
-            margin: "0 auto 1.5rem", 
-            display: "flex", 
-            alignItems: "center", 
+          <div style={{
+            width: "80px",
+            height: "80px",
+            background: "#fff",
+            borderRadius: "20px",
+            margin: "0 auto 1.5rem",
+            display: "flex",
+            alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 8px 24px rgba(102, 126, 234, 0.4)",
-            fontSize: "2.5rem"
+            boxShadow: "0 8px 24px rgba(102, 126, 234, 0.25)",
+            fontSize: "2.5rem",
+            border: "1px solid #e2e8f0"
           }}>
             🔐
           </div>
-          <h1 style={{ 
-            fontSize: responsiveHeaderSize, 
-            fontWeight: 800, 
-            marginBottom: "0.75rem", 
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", 
-            WebkitBackgroundClip: "text", 
-            WebkitTextFillColor: "transparent", 
+          <h1 style={{
+            fontSize: responsiveHeaderSize,
+            fontWeight: 800,
+            marginBottom: "0.75rem",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
             backgroundClip: "text",
             letterSpacing: "-0.02em"
           }}>
             Admin Access
           </h1>
-          <p style={{ 
-            fontSize: responsiveFontSize, 
-            color: "#64748b", 
+          <p style={{
+            fontSize: responsiveFontSize,
+            color: "#64748b",
             marginBottom: 0,
             fontWeight: 500
           }}>
@@ -113,190 +116,132 @@ export default function AdminKeyPage() {
         {/* Key Input Form */}
         <div className="fade-in-delay-1" style={{ marginBottom: "2.5rem" }}>
           <div style={{ marginBottom: "1.5rem" }}>
-            <label style={{ 
-              display: "block", 
-              marginBottom: "0.75rem", 
-              fontWeight: 600, 
+            <label style={{
+              display: "block",
+              marginBottom: "0.75rem",
+              fontWeight: 600,
               color: "#1e293b",
               fontSize: "0.95rem"
             }}>
               Admin Key
             </label>
-            <input
-              type="password"
-              value={key}
-              onChange={(e) => setKey(e.target.value)}
-              placeholder="Enter your admin key..."
-              onKeyPress={(e) => e.key === "Enter" && save()}
-              style={{ 
-                width: "100%", 
-                padding: "1rem 1.25rem", 
-                border: "2px solid #e2e8f0", 
-                borderRadius: "12px", 
-                fontSize: responsiveFontSize, 
-                fontFamily: "'Inter', sans-serif", 
-                transition: "all 0.3s ease", 
-                boxSizing: "border-box",
-                background: "#f8fafc"
-              }}
-              onFocus={(e) => { 
-                e.target.style.borderColor = "#667eea"; 
-                e.target.style.boxShadow = "0 0 0 4px rgba(102, 126, 234, 0.1)"; 
-                e.target.style.background = "white"; 
-              }}
-              onBlur={(e) => { 
-                e.target.style.borderColor = "#e2e8f0"; 
-                e.target.style.boxShadow = "none"; 
-                e.target.style.background = "#f8fafc"; 
-              }}
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={key}
+                onChange={(e) => setKey(e.target.value)}
+                placeholder="Enter your admin key..."
+                onKeyPress={(e) => e.key === "Enter" && save()}
+                style={{
+                  width: "100%",
+                  padding: "1rem 3rem 1rem 1.25rem",
+                  border: "2px solid #e2e8f0",
+                  borderRadius: "12px",
+                  fontSize: responsiveFontSize,
+                  fontFamily: "'Inter', sans-serif",
+                  transition: "all 0.3s ease",
+                  boxSizing: "border-box",
+                  background: "#f8fafc",
+                  color: "#000"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#667eea";
+                  e.target.style.boxShadow = "0 0 0 4px rgba(102, 126, 234, 0.1)";
+                  e.target.style.background = "white";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e2e8f0";
+                  e.target.style.boxShadow = "none";
+                  e.target.style.background = "#f8fafc";
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "4px",
+                  fontSize: "1.2rem",
+                  opacity: 0.6
+                }}
+              >
+                {showPassword ? "👁️" : "🫣"}
+              </button>
+            </div>
           </div>
 
-          <button 
-            onClick={save} 
-            style={{ 
-              width: "100%", 
-              padding: isMobile ? "1rem" : "1.125rem", 
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", 
-              color: "white", 
-              border: "none", 
-              borderRadius: "12px", 
-              fontSize: responsiveFontSize, 
-              fontWeight: 700, 
-              cursor: "pointer", 
+          <button
+            onClick={save}
+            style={{
+              width: "100%",
+              padding: isMobile ? "1rem" : "1.125rem",
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white",
+              border: "none",
+              borderRadius: "12px",
+              fontSize: responsiveFontSize,
+              fontWeight: 700,
+              cursor: "pointer",
               transition: "all 0.3s ease",
               letterSpacing: "0.02em",
               boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)"
             }}
-            onMouseEnter={(e) => { 
-              e.target.style.transform = "translateY(-2px)"; 
-              e.target.style.boxShadow = "0 8px 24px rgba(102, 126, 234, 0.4)"; 
+            onMouseEnter={(e) => {
+              e.target.style.transform = "translateY(-2px)";
+              e.target.style.boxShadow = "0 8px 24px rgba(102, 126, 234, 0.4)";
             }}
-            onMouseLeave={(e) => { 
-              e.target.style.transform = "translateY(0)"; 
-              e.target.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.3)"; 
+            onMouseLeave={(e) => {
+              e.target.style.transform = "translateY(0)";
+              e.target.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.3)";
             }}
           >
             Continue to Admin Panel →
           </button>
         </div>
 
-        {/* Divider */}
-        <div style={{ 
-          height: "1px", 
-          background: "linear-gradient(90deg, transparent, #e2e8f0, transparent)", 
-          margin: "2.5rem 0" 
-        }} />
 
-        {/* Quick Navigation */}
-        <div className="fade-in-delay-2" style={{ marginBottom: "2.5rem" }}>
-          <h3 style={{ 
-            fontSize: isMobile ? "1.05rem" : "1.15rem", 
-            fontWeight: 700, 
-            marginBottom: "1.25rem", 
-            color: "#1e293b",
-            letterSpacing: "-0.01em"
-          }}>
-            Quick Navigation
-          </h3>
-          <nav style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
-            {navItems.map((item, idx) => (
-              <Link 
-                key={idx}
-                to={item.to} 
-                onMouseEnter={() => setIsHovering(idx)}
-                onMouseLeave={() => setIsHovering(null)}
-                style={{ 
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                  padding: "1rem 1.25rem", 
-                  background: isHovering === idx ? "linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%)" : "#f8fafc",
-                  borderRadius: "12px", 
-                  textDecoration: "none", 
-                  transition: "all 0.3s ease", 
-                  border: `2px solid ${isHovering === idx ? "#667eea" : "transparent"}`,
-                  transform: isHovering === idx ? "translateX(4px)" : "translateX(0)",
-                  boxShadow: isHovering === idx ? "0 4px 12px rgba(102, 126, 234, 0.15)" : "none"
-                }}
-              >
-                <div style={{ 
-                  fontSize: "1.5rem",
-                  width: "40px",
-                  height: "40px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: isHovering === idx ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" : "#e2e8f0",
-                  borderRadius: "10px",
-                  transition: "all 0.3s ease"
-                }}>
-                  {isHovering === idx ? "✨" : item.icon}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ 
-                    color: isHovering === idx ? "#667eea" : "#1e293b", 
-                    fontWeight: 600,
-                    fontSize: responsiveFontSize,
-                    marginBottom: "0.15rem",
-                    transition: "color 0.3s ease"
-                  }}>
-                    {item.label}
-                  </div>
-                  <div style={{ 
-                    color: "#64748b", 
-                    fontSize: isMobile ? "0.8rem" : "0.85rem",
-                    lineHeight: 1.4
-                  }}>
-                    {item.desc}
-                  </div>
-                </div>
-                <div style={{ 
-                  color: isHovering === idx ? "#667eea" : "#cbd5e1",
-                  transition: "all 0.3s ease",
-                  transform: isHovering === idx ? "translateX(4px)" : "translateX(0)",
-                  fontSize: "1.25rem"
-                }}>
-                  →
-                </div>
-              </Link>
-            ))}
-          </nav>
-        </div>
+
+
 
         {/* Divider */}
-        <div style={{ 
-          height: "1px", 
-          background: "linear-gradient(90deg, transparent, #e2e8f0, transparent)", 
-          margin: "2.5rem 0" 
+        <div style={{
+          height: "1px",
+          background: "linear-gradient(90deg, transparent, #e2e8f0, transparent)",
+          margin: "2.5rem 0"
         }} />
 
         {/* About Section */}
         <div className="fade-in-delay-3" style={{ marginTop: "2rem" }}>
-          <h3 style={{ 
-            fontSize: isMobile ? "1.05rem" : "1.15rem", 
-            fontWeight: 700, 
-            marginBottom: "1rem", 
+          <h3 style={{
+            fontSize: isMobile ? "1.05rem" : "1.15rem",
+            fontWeight: 700,
+            marginBottom: "1rem",
             color: "#1e293b",
             letterSpacing: "-0.01em"
           }}>
             About This Admin Panel
           </h3>
-          <p style={{ 
-            color: "#64748b", 
-            marginBottom: "1.25rem", 
-            lineHeight: 1.7, 
-            fontSize: responsiveFontSize 
+          <p style={{
+            color: "#64748b",
+            marginBottom: "1.25rem",
+            lineHeight: 1.7,
+            fontSize: responsiveFontSize
           }}>
             Manage all aspects of your site's content through this centralized admin panel. Make changes that reflect immediately on your public site.
           </p>
-          
-          <div style={{ 
-            background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)", 
-            borderLeft: "4px solid #3b82f6", 
-            padding: "1.25rem", 
-            borderRadius: "12px", 
-            fontSize: isMobile ? "0.85rem" : "0.9rem", 
+
+          <div style={{
+            background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+            borderLeft: "4px solid #3b82f6",
+            padding: "1.25rem",
+            borderRadius: "12px",
+            fontSize: isMobile ? "0.85rem" : "0.9rem",
             color: "#1e40af",
             lineHeight: 1.7,
             boxShadow: "0 2px 8px rgba(59, 130, 246, 0.1)"

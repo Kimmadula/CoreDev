@@ -22,5 +22,6 @@ export async function apiAdmin(path, { method = "POST", body } = {}) {
   });
 
   if (!res.ok) throw new Error(await res.text());
+  if (res.status === 204) return {};
   return res.json();
 }

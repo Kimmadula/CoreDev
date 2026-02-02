@@ -1,17 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { apiGet } from "../api.js";
 import "./LandingPage.css";
+import kbLogo from "../assets/kb.png";
 
 export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const products = [
-    { id: 1, name: "Help Desk", icon: "🛡️" },
-    { id: 2, name: "IACCS 2013", icon: "📋" },
-    { id: 3, name: "Farm Pro Management", icon: "📍" },
-    { id: 4, name: "Membership Application", icon: "👥" },
-    { id: 5, name: "OrangePay Plus", icon: "💳" },
-    { id: 6, name: "E-Services", icon: "✅" },
-  ];
+  useEffect(() => {
+    apiGet("/products")
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load products", err);
+        setLoading(false);
+      });
+  }, []);
+
+  // Helper to assign icons and links based on slug
+  const getProductMeta = (p) => {
+    const slug = p.slug;
+    let icon = "📦"; // Default icon
+    let link = `/product/${slug}`;
+
+    // Custom mappings
+    if (slug === "membership-app" || slug === "membership-application") {
+      icon = "👥";
+      link = "/membership-app";
+    } else if (slug === "iaccs-2013") {
+      icon = "📋";
+    } else if (slug === "farm-pro") {
+      icon = "📍";
+    } else if (slug === "orange-pay") {
+      icon = "💳";
+    } else if (slug === "e-services") {
+      icon = "✅";
+    }
+
+    return { icon, link };
+  };
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -19,72 +50,112 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page">
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-content">
-          <h1>Knowledge Base</h1>
-          <p className="hero-subtitle">Explore and learn more about our products.</p>
+      {/* Top Header */}
+      <header style={{
+        height: "50px",
+        background: "#ffffff",
+        borderBottom: "1px solid #ccc",
+        display: "flex",
+        alignItems: "center",
+        padding: "0 15px",
+        justifyContent: "space-between",
+        width: "100%",
+        boxSizing: "border-box",
+        position: "fixed",
+        top: 0,
+        zIndex: 1000
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+          <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "5px" }}>
+            <div style={{ fontWeight: "700", color: "#005073", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
+              <img src={kbLogo} alt="CoreDev Logo" style={{ height: "24px" }} />
+              <span>CoreDev</span>
+            </div>
+          </Link>
+          <div style={{ height: "20px", width: "1px", background: "#ddd" }}></div>
+          <h1 style={{ fontSize: "16px", fontWeight: "400", color: "#555", margin: 0 }}>
+            Help Desk
+          </h1>
+        </div>
+      </header>
 
-          <div className="search-container">
-            <div className="search-wrapper">
-              <svg
-                className="search-icon"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-              </svg>
-              <input
-                type="search"
-                placeholder="Search for products, features, or documentation..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+      {/* Main Content Padding for Fixed Header */}
+      <div style={{ paddingTop: "50px" }}>
+
+        {/* Hero Section */}
+        <section className="hero">
+          <div className="hero-content">
+            <h1>Knowledge Base</h1>
+            <p className="hero-subtitle">Explore and learn more about our products.</p>
+
+            <div className="search-container">
+              <div className="search-wrapper">
+                <svg
+                  className="search-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input
+                  type="search"
+                  placeholder="Search for products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Products Section */}
-      <section className="products-section">
-        <div className="container">
-          <h2 className="section-title">Products</h2>
+        {/* Products Section */}
+        <section className="products-section">
+          <div className="container">
+            <h2 className="section-title">Products</h2>
 
-          <div className="products-grid">
-            {filteredProducts.map((product) => (
-              <div key={product.id} className="product-card">
-                <div className="product-icon">{product.icon}</div>
-                <div className="product-name">{product.name}</div>
-              </div>
-            ))}
+            <div className="products-grid">
+              {loading ? (
+                <p>Loading products...</p>
+              ) : (
+                filteredProducts.map((product) => {
+                  const { icon, link } = getProductMeta(product);
+                  return (
+                    <Link to={link} key={product.id} className="product-card" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                      <div className="product-icon">{icon}</div>
+                      <div className="product-name">{product.name}</div>
+                    </Link>
+                  );
+                })
+              )}
+            </div>
+
+            {filteredProducts.length === 0 && (
+              <p style={{ textAlign: "center", opacity: 0.6, marginTop: 32 }}>
+                No products found matching "{searchQuery}"
+              </p>
+            )}
           </div>
+        </section>
 
-          {filteredProducts.length === 0 && (
-            <p style={{ textAlign: "center", opacity: 0.6, marginTop: 32 }}>
-              No products found matching "{searchQuery}"
-            </p>
-          )}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer>
-        <div className="footer-content">
-          <div className="footer-left">
-            <div className="footer-item">Documentation</div>
-            <div className="footer-item">Community</div>
-            <div className="footer-item">Support</div>
+        {/* Footer */}
+        <footer>
+          <div className="footer-content">
+            <div className="footer-left">
+              <div className="footer-item">Documentation</div>
+              <div className="footer-item">Community</div>
+              <div className="footer-item">Support</div>
+            </div>
+            <div className="copyright">© 2026 CoreDev. All rights reserved.</div>
           </div>
-          <div className="copyright">© 2026 CoreDev. All rights reserved.</div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }
