@@ -19,8 +19,9 @@ export default function App() {
       {/* PUBLIC */}
       {/* PUBLIC */}
       <Route path="/" element={<LandingPage />} />
+      <Route path="/membership-app" element={<MembershipAppPage />} />
       <Route element={<PublicLayout />}>
-        <Route path="/membership-app" element={<MembershipAppPage />} />
+        {/* Other public pages if any */}
       </Route>
 
       <Route path="/product/:slug" element={<ProductPage />} />

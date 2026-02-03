@@ -19,8 +19,11 @@ export default function HelpDeskPage() {
     ])
       .then(([p, secs]) => {
         setProduct(p);
-        setSections(secs);
-        if (secs.length > 0) setActiveSectionId(secs[0].id);
+        // Sort by ID Ascending (Oldest to Newest)
+        // Ensure IDs are treated as numbers
+        const sortedSections = [...secs].sort((a, b) => (parseInt(a.sort_order) - parseInt(b.sort_order)) || (parseInt(a.id) - parseInt(b.id)));
+        setSections(sortedSections);
+        if (sortedSections.length > 0) setActiveSectionId(sortedSections[0].id);
       })
       .catch((e) => setErr(String(e)))
       .finally(() => setLoading(false));
@@ -36,8 +39,8 @@ export default function HelpDeskPage() {
       {/* Top Header - Cisco Style */}
       <header style={{
         height: "50px",
-        background: "#ffffff",
-        borderBottom: "1px solid #ccc",
+        background: "#353635",
+        borderBottom: "1px solid #444",
         display: "flex",
         alignItems: "center",
         padding: "0 15px",
@@ -48,22 +51,22 @@ export default function HelpDeskPage() {
         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
           {/* Logo / Brand */}
           <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "5px" }}>
-            <div style={{ fontWeight: "700", color: "#005073", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
-              <span>CoreDev</span> <span style={{ fontWeight: "300", color: "#555" }}>|</span> <span style={{ fontWeight: "400", color: "#333" }}>Networking Academy</span>
+            <div style={{ fontWeight: "700", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
+              <span><span style={{ color: "#ff6c00" }}>Core</span><span style={{ color: "#fff" }}>Dev</span></span> <span style={{ fontWeight: "300", color: "#aaa" }}>|</span> <span style={{ fontWeight: "400", color: "#ddd" }}>Networking Academy</span>
             </div>
           </Link>
 
-          <div style={{ height: "20px", width: "1px", background: "#ddd" }}></div>
+          <div style={{ height: "20px", width: "1px", background: "#666" }}></div>
 
-          <h1 style={{ fontSize: "16px", fontWeight: "400", color: "#555", margin: 0 }}>
+          <h1 style={{ fontSize: "16px", fontWeight: "400", color: "#ddd", margin: 0 }}>
             Product / {product?.name || "Help Desk"}
           </h1>
         </div>
 
         {/* Window Controls */}
         <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-          <button style={{ border: "none", background: "none", cursor: "pointer", fontSize: "16px", color: "#666" }}>📖</button>
-          <button style={{ border: "none", background: "none", cursor: "pointer", fontSize: "16px", color: "#666" }}>✕</button>
+          <button style={{ border: "none", background: "none", cursor: "pointer", fontSize: "16px", color: "#ccc" }}>📖</button>
+          <button style={{ border: "none", background: "none", cursor: "pointer", fontSize: "16px", color: "#ccc" }}>✕</button>
         </div>
       </header>
 
@@ -86,7 +89,7 @@ export default function HelpDeskPage() {
                 flex: 1,
                 padding: "12px",
                 textAlign: "center",
-                borderBottom: "3px solid #7cb342",
+                borderBottom: "3px solid #ff6c00",
                 color: "#333",
                 fontWeight: "700",
                 fontSize: "13px",
@@ -135,8 +138,8 @@ export default function HelpDeskPage() {
                       style={{
                         padding: "12px 15px",
                         cursor: "pointer",
-                        background: isActive ? "#e8f5e9" : "#fff",
-                        borderLeft: isActive ? "4px solid #7cb342" : "4px solid transparent",
+                        background: isActive ? "#fff3e0" : "#fff",
+                        borderLeft: isActive ? "4px solid #ff6c00" : "4px solid transparent",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
@@ -146,7 +149,7 @@ export default function HelpDeskPage() {
                       <span style={{ fontWeight: "700", fontSize: "12px", color: "#333" }}>
                         Module {index + 1}: {sec.title}
                       </span>
-                      <span style={{ fontSize: "10px", color: isActive ? "#7cb342" : "#aaa" }}>
+                      <span style={{ fontSize: "10px", color: isActive ? "#ff6c00" : "#aaa" }}>
                         {isActive ? "▼" : "▶"}
                       </span>
                     </div>
@@ -177,13 +180,13 @@ export default function HelpDeskPage() {
                           color: "#000",
                           fontWeight: "600",
                           display: "flex", alignItems: "center", gap: "10px",
-                          background: "#f1f8e9"
+                          background: "#fff3e0"
                         }}>
                           <span style={{
                             width: "10px", height: "10px",
                             borderRadius: "50%",
                             background: "#fff",
-                            border: "3px solid #7cb342",
+                            border: "3px solid #ff6c00",
                             display: "inline-block"
                           }}></span>
                           {index + 1}.0.2 {sec.title} File Types
@@ -261,11 +264,11 @@ export default function HelpDeskPage() {
                   </p>
 
                   <div style={{
-                    borderLeft: "4px solid #7cb342",
+                    borderLeft: "4px solid #ff6c00",
                     padding: "15px",
-                    background: "#f1f8e9",
+                    background: "#fff3e0",
                     marginBottom: "30px",
-                    color: "#2e7d32",
+                    color: "#e65100",
                     fontSize: "14px"
                   }}>
                     <strong>Note:</strong> {activeSection.description || "The system creates four different types of files. These file types are used for different purposes."}
@@ -311,7 +314,7 @@ export default function HelpDeskPage() {
             background: "#fff", border: "1px solid #ddd", borderLeft: "none",
             width: "30px", height: "60px",
             display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", color: "#7cb342",
+            cursor: "pointer", color: "#ff6c00",
             boxShadow: "2px 0 5px rgba(0,0,0,0.05)"
           }}>
             ❮
@@ -324,7 +327,7 @@ export default function HelpDeskPage() {
             background: "#fff", border: "1px solid #ddd", borderRight: "none",
             width: "30px", height: "60px",
             display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", color: "#7cb342",
+            cursor: "pointer", color: "#ff6c00",
             boxShadow: "-2px 0 5px rgba(0,0,0,0.05)"
           }}>
             ❯

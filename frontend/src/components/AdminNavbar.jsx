@@ -11,15 +11,15 @@ export default function AdminNavbar() {
 
     return (
         <div style={{
-            background: "#fff",
-            borderBottom: "1px solid #ddd",
+            background: "#353635",
+            borderBottom: "1px solid #444",
             padding: "15px 40px",
             marginBottom: "20px",
             display: "flex",
             alignItems: "center",
             gap: "20px"
         }}>
-            <h3 style={{ margin: 0, marginRight: "20px", color: "#333" }}>Admin Panel</h3>
+            <h3 style={{ margin: 0, marginRight: "20px", color: "#fff" }}>Admin Panel</h3>
             {navItems.map(item => {
                 const isActive = location.pathname.startsWith(item.path);
                 return (
@@ -28,18 +28,18 @@ export default function AdminNavbar() {
                         to={item.path}
                         style={{
                             textDecoration: "none",
-                            color: isActive ? "#4f46e5" : "#666",
+                            color: isActive ? "#fff" : "#ccc",
                             fontWeight: isActive ? "700" : "500",
                             padding: "8px 12px",
                             borderRadius: "6px",
-                            background: isActive ? "#eff6ff" : "transparent"
+                            background: isActive ? "#4f46e5" : "transparent"
                         }}
                     >
                         {item.label}
                     </Link>
                 );
             })}
-            <Link to="/" style={{ marginLeft: "auto", textDecoration: "none", color: "#666", fontSize: "14px" }}>
+            <Link to="/" style={{ marginLeft: "auto", textDecoration: "none", color: "#ccc", fontSize: "14px" }}>
                 View Site &rarr;
             </Link>
         </div>

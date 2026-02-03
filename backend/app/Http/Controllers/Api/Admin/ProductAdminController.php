@@ -25,6 +25,7 @@ class ProductAdminController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|unique:products,slug',
             'description' => 'nullable|string',
+            'sort_order' => 'nullable|integer',
         ]);
 
         return Product::create($validated);
@@ -39,6 +40,7 @@ class ProductAdminController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'slug' => 'sometimes|required|string|unique:products,slug,' . $product->id,
             'description' => 'nullable|string',
+            'sort_order' => 'nullable|integer',
         ]);
 
         $product->update($validated);

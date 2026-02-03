@@ -31,6 +31,18 @@ export default function AdminArticlesPage() {
   const [editContent, setEditContent] = useState("");
   const [editSectionId, setEditSectionId] = useState("");
 
+  const [autoSlug, setAutoSlug] = useState(true);
+  const [editAutoSlug, setEditAutoSlug] = useState(false);
+
+  function slugify(value) {
+    return String(value)
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  }
+
   // Refs for handling valid Color Picker (Hex)
   const colorInputRef = useRef(null);
   const bgInputRef = useRef(null);
@@ -76,12 +88,13 @@ export default function AdminArticlesPage() {
         body: {
           section_id: parseInt(selectedSectionId),
           title,
-          slug,
+          slug: slugify(slug),
           content,
         },
       });
       setTitle("");
       setSlug("");
+      setAutoSlug(true);
       setContent("");
       setSuccess("Article created successfully!");
       await loadArticles();
@@ -97,6 +110,7 @@ export default function AdminArticlesPage() {
     setEditSlug(article.slug);
     setEditContent(article.content);
     setEditSectionId(article.section_id);
+    setEditAutoSlug(article.slug === slugify(article.title));
   }
 
   async function saveEdit() {
@@ -112,7 +126,7 @@ export default function AdminArticlesPage() {
         body: {
           section_id: editSectionId,
           title: editTitle,
-          slug: editSlug,
+          slug: slugify(editSlug),
           content: editContent,
         },
       });
@@ -172,7 +186,7 @@ export default function AdminArticlesPage() {
         [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
         [{ 'align': [] }],
         ['color', 'background'], // Button mode for custom handlers
-        ['link', 'image'],
+        ['link', 'image', 'video'],
         ['clean']
       ],
       handlers: {
@@ -193,7 +207,7 @@ export default function AdminArticlesPage() {
     'bold', 'italic', 'underline', 'strike', 'blockquote',
     'list', 'bullet', 'indent', 'align',
     'color', 'background',
-    'link', 'image'
+    'link', 'image', 'video'
   ];
 
   return (
@@ -246,13 +260,17 @@ export default function AdminArticlesPage() {
               <option value="">Select Section</option>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.title}
+                  {s.title} {s.product?.name ? `- ${s.product.name}` : ""}
                 </option>
               ))}
             </select>
             <input
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                const v = e.target.value;
+                setTitle(v);
+                if (autoSlug) setSlug(slugify(v));
+              }}
               placeholder="Title"
               style={{
                 padding: 12,
@@ -266,7 +284,10 @@ export default function AdminArticlesPage() {
             />
             <input
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => {
+                setSlug(e.target.value);
+                setAutoSlug(false);
+              }}
               placeholder="Slug (example: getting-started)"
               style={{
                 padding: 12,
@@ -275,9 +296,13 @@ export default function AdminArticlesPage() {
                 marginBottom: 12,
                 borderRadius: 8,
                 border: "1px solid #ddd",
-                boxSizing: "border-box"
+                boxSizing: "border-box",
+                fontFamily: "monospace",
+                background: "#fafbfc",
+                color: "#000"
               }}
             />
+            {autoSlug && slug && <p style={{ fontSize: "12px", color: "#6b7280", margin: "-8px 0 12px 0", fontStyle: "italic" }}>🔄 Auto-generated from title</p>}
             <label style={{ display: "block", marginBottom: 8, fontWeight: 600, color: "#374151" }}>Article Content</label>
             <ReactQuill
               theme="snow"
@@ -319,7 +344,11 @@ export default function AdminArticlesPage() {
                   >
                     <input
                       value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setEditTitle(v);
+                        if (editAutoSlug) setEditSlug(slugify(v));
+                      }}
                       placeholder="Title"
                       style={{
                         width: "100%",
@@ -327,12 +356,17 @@ export default function AdminArticlesPage() {
                         marginBottom: 12,
                         borderRadius: 8,
                         border: "1px solid #ddd",
-                        boxSizing: "border-box"
+                        boxSizing: "border-box",
+                        background: "#fff",
+                        color: "#000"
                       }}
                     />
                     <input
                       value={editSlug}
-                      onChange={(e) => setEditSlug(e.target.value)}
+                      onChange={(e) => {
+                        setEditSlug(e.target.value);
+                        setEditAutoSlug(false);
+                      }}
                       placeholder="Slug"
                       style={{
                         width: "100%",
@@ -340,7 +374,10 @@ export default function AdminArticlesPage() {
                         marginBottom: 12,
                         borderRadius: 8,
                         border: "1px solid #ddd",
-                        boxSizing: "border-box"
+                        boxSizing: "border-box",
+                        fontFamily: "monospace",
+                        background: "#fafbfc",
+                        color: "#000"
                       }}
                     />
                     <select
@@ -350,13 +387,16 @@ export default function AdminArticlesPage() {
                         width: "100%",
                         padding: 12,
                         marginBottom: 12,
+                        marginBottom: 12,
                         borderRadius: 8,
-                        border: "1px solid #ddd"
+                        border: "1px solid #ddd",
+                        background: "#fff",
+                        color: "#000"
                       }}
                     >
                       {sections.map((s) => (
                         <option key={s.id} value={s.id}>
-                          {s.title}
+                          {s.title} {s.product?.name ? `- ${s.product.name}` : ""}
                         </option>
                       ))}
                     </select>
@@ -406,6 +446,8 @@ export default function AdminArticlesPage() {
                       </p>
                       <p style={{ margin: "4px 0 0 0", opacity: 0.7, fontSize: "0.9em" }}>
                         Section: {article.section?.title || "Unknown"}
+                        <span style={{ margin: "0 8px", color: "#d1d5db" }}>|</span>
+                        Product: {sections.find(s => s.id == article.section_id)?.product?.name || "Unknown"}
                       </p>
                     </div>
                     <div
@@ -424,7 +466,7 @@ export default function AdminArticlesPage() {
                     </div>
                     <button
                       onClick={() => startEdit(article)}
-                      style={{ padding: "6px 12px", marginRight: 8, background: "#f3f4f6", border: "1px solid #d1d5db", borderRadius: 6, cursor: "pointer" }}
+                      style={{ padding: "6px 12px", marginRight: 8, background: "#f3f4f6", border: "1px solid #d1d5db", borderRadius: 6, cursor: "pointer", color: "#374151" }}
                     >
                       Edit
                     </button>

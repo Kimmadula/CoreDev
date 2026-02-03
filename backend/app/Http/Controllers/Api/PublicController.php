@@ -36,6 +36,11 @@ class PublicController extends Controller
 
   }
 
+  public function section($slug)
+  {
+    return Section::with('product')->where('slug', $slug)->firstOrFail();
+  }
+
   public function sectionArticles($slug)
   {
 
@@ -48,7 +53,7 @@ class PublicController extends Controller
   public function article($slug)
   {
 
-    return Article::where('slug', $slug)->firstOrFail();
+    return Article::with('section.product')->where('slug', $slug)->firstOrFail();
 
   }
 

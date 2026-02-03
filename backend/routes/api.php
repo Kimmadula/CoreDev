@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Admin\ArticleAdminController;
 Route::get('/products', [PublicController::class, 'products']);
 Route::get('/products/{slug}', [PublicController::class, 'product']);
 Route::get('/products/{slug}/sections', [PublicController::class, 'productSections']);
+Route::get('/sections/{slug}', [PublicController::class, 'section']);
 Route::get('/sections/{slug}/articles', [PublicController::class, 'sectionArticles']);
 Route::get('/articles/{slug}', [PublicController::class, 'article']);
 

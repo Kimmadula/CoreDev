@@ -26,6 +26,7 @@ class SectionAdminController extends Controller
             'product_id' => 'required|exists:products,id',
             'title' => 'required|string|max:255',
             'slug' => 'required|string',
+            'sort_order' => 'nullable|integer',
         ]);
 
         // Check unique constraint (slug unique per product)
@@ -51,6 +52,7 @@ class SectionAdminController extends Controller
             'product_id' => 'sometimes|required|exists:products,id',
             'title' => 'sometimes|required|string|max:255',
             'slug' => 'sometimes|required|string',
+            'sort_order' => 'nullable|integer',
         ]);
 
         // Check unique constraint if slug is being updated

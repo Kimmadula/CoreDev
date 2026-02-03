@@ -157,7 +157,8 @@
 }
 
 .ql-align-justify {
-  text-align: justify;
+  text-align: left !important;
+  /* Force left align to fix word break issues */
 }
 
 .ql-indent-1 {
@@ -194,5 +195,11 @@
 
 /* Ensure whitespace is preserved */
 .ql-editor {
-  white-space: pre-wrap;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  /* Legacy support */
+  text-align: left;
+  /* Prevent justify spacing issues */
 }

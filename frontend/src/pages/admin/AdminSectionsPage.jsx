@@ -21,6 +21,21 @@ export default function AdminSectionsPage() {
   const [editSlug, setEditSlug] = useState("");
   const [editProductId, setEditProductId] = useState("");
 
+  const [autoSlug, setAutoSlug] = useState(true);
+  const [editAutoSlug, setEditAutoSlug] = useState(false);
+
+  const [sortOrder, setSortOrder] = useState(0);
+  const [editSortOrder, setEditSortOrder] = useState(0);
+
+  function slugify(value) {
+    return String(value)
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  }
+
   async function loadSections() {
     setErr("");
     try {
@@ -28,6 +43,8 @@ export default function AdminSectionsPage() {
       const filtered = productId
         ? data.filter((s) => s.product_id == productId)
         : data;
+      // Sort by sort_order ascending, then ID
+      filtered.sort((a, b) => (parseInt(a.sort_order) - parseInt(b.sort_order)) || (parseInt(a.id) - parseInt(b.id)));
       setItems(filtered);
     } catch (e) {
       setErr(String(e));
@@ -56,16 +73,20 @@ export default function AdminSectionsPage() {
       return;
     }
     try {
+      const cleanSlug = slugify(slug);
       await apiAdmin("/admin/sections", {
         method: "POST",
         body: {
           product_id: parseInt(selectedProductId),
           title,
-          slug,
+          slug: cleanSlug,
+          sort_order: parseInt(sortOrder) || 0,
         },
       });
       setTitle("");
       setSlug("");
+      setSortOrder(0);
+      setAutoSlug(true);
       setSuccess("Section created successfully!");
       await loadSections();
       setTimeout(() => setSuccess(""), 3000);
@@ -78,7 +99,9 @@ export default function AdminSectionsPage() {
     setEditingId(section.id);
     setEditTitle(section.title);
     setEditSlug(section.slug);
+    setEditSortOrder(section.sort_order || 0);
     setEditProductId(section.product_id);
+    setEditAutoSlug(section.slug === slugify(section.title));
   }
 
   async function saveEdit() {
@@ -89,12 +112,14 @@ export default function AdminSectionsPage() {
       return;
     }
     try {
+      const cleanSlug = slugify(editSlug);
       await apiAdmin(`/admin/sections/${editingId}`, {
         method: "PUT",
         body: {
           product_id: editProductId,
           title: editTitle,
-          slug: editSlug,
+          slug: cleanSlug,
+          sort_order: parseInt(editSortOrder) || 0,
         },
       });
       setEditingId(null);
@@ -165,7 +190,11 @@ export default function AdminSectionsPage() {
             </select>
             <input
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                const v = e.target.value;
+                setTitle(v);
+                if (autoSlug) setSlug(slugify(v));
+              }}
               placeholder="Title"
               style={{
                 padding: 12,
@@ -176,11 +205,36 @@ export default function AdminSectionsPage() {
                 border: "1px solid #ddd",
                 boxSizing: "border-box"
               }}
+              onFocus={(e) => { e.target.style.borderColor = "#4f46e5"; e.target.style.boxShadow = "0 0 0 3px rgba(79, 70, 229, 0.1)"; }}
+              onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; e.target.style.boxShadow = "none"; }}
             />
             <input
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => {
+                setSlug(e.target.value);
+                setAutoSlug(false);
+              }}
               placeholder="Slug (example: overview)"
+              style={{
+                padding: 12,
+                width: "100%",
+                display: "block",
+                marginBottom: 12,
+                borderRadius: 8,
+                border: "1px solid #ddd",
+                boxSizing: "border-box",
+                fontFamily: "monospace",
+                background: "#fafbfc",
+                color: "#000"
+              }}
+              onFocus={(e) => { e.target.style.borderColor = "#4f46e5"; e.target.style.boxShadow = "0 0 0 3px rgba(79, 70, 229, 0.1)"; }}
+              onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; e.target.style.boxShadow = "none"; }}
+            />
+            <input
+              type="number"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              placeholder="Sort Order (0)"
               style={{
                 padding: 12,
                 width: "100%",
@@ -190,7 +244,10 @@ export default function AdminSectionsPage() {
                 border: "1px solid #ddd",
                 boxSizing: "border-box"
               }}
+              onFocus={(e) => { e.target.style.borderColor = "#4f46e5"; e.target.style.boxShadow = "0 0 0 3px rgba(79, 70, 229, 0.1)"; }}
+              onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; e.target.style.boxShadow = "none"; }}
             />
+            {autoSlug && slug && <p style={{ fontSize: "12px", color: "#6b7280", margin: "-8px 0 12px 0", fontStyle: "italic" }}>🔄 Auto-generated from title</p>}
             <button onClick={create} style={{ padding: "10px 20px", background: "#4f46e5", color: "white", border: "none", borderRadius: 8, fontWeight: 600, cursor: "pointer" }}>
               Create Section
             </button>
@@ -203,6 +260,7 @@ export default function AdminSectionsPage() {
                 <tr style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
                   <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: "#374151" }}>Title</th>
                   <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: "#374151" }}>Slug</th>
+                  <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: "#374151" }}>Order</th>
                   <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: "#374151" }}>Product</th>
                   <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: "#374151" }}>Actions</th>
                 </tr>
@@ -214,22 +272,37 @@ export default function AdminSectionsPage() {
                       <td style={{ padding: 12 }}>
                         <input
                           value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
-                          style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #d1d5db" }}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            setEditTitle(v);
+                            if (editAutoSlug) setEditSlug(slugify(v));
+                          }}
+                          style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #d1d5db", color: "#000", background: "#fff" }}
                         />
                       </td>
                       <td style={{ padding: 12 }}>
                         <input
                           value={editSlug}
-                          onChange={(e) => setEditSlug(e.target.value)}
-                          style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #d1d5db" }}
+                          onChange={(e) => {
+                            setEditSlug(e.target.value);
+                            setEditAutoSlug(false);
+                          }}
+                          style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #d1d5db", fontFamily: "monospace", background: "#fafbfc", color: "#000" }}
+                        />
+                      </td>
+                      <td style={{ padding: 12 }}>
+                        <input
+                          type="number"
+                          value={editSortOrder}
+                          onChange={(e) => setEditSortOrder(e.target.value)}
+                          style={{ width: "60px", padding: 8, borderRadius: 6, border: "1px solid #d1d5db", color: "#000", background: "#fff" }}
                         />
                       </td>
                       <td style={{ padding: 12 }}>
                         <select
                           value={editProductId}
                           onChange={(e) => setEditProductId(e.target.value)}
-                          style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #d1d5db" }}
+                          style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #d1d5db", color: "#000", background: "#fff" }}
                         >
                           {products.map((p) => (
                             <option key={p.id} value={p.id}>
@@ -257,13 +330,14 @@ export default function AdminSectionsPage() {
                     <tr key={section.id} style={{ borderBottom: "1px solid #eee" }}>
                       <td style={{ padding: "12px 16px", fontWeight: 500 }}>{section.title}</td>
                       <td style={{ padding: "12px 16px", color: "#6b7280" }}>{section.slug}</td>
+                      <td style={{ padding: "12px 16px" }}>{section.sort_order}</td>
                       <td style={{ padding: "12px 16px" }}>
                         {section.product?.name || "Unknown"}
                       </td>
                       <td style={{ padding: "12px 16px" }}>
                         <button
                           onClick={() => startEdit(section)}
-                          style={{ padding: "6px 12px", marginRight: 8, background: "#f3f4f6", border: "1px solid #d1d5db", borderRadius: 6, cursor: "pointer" }}
+                          style={{ padding: "6px 12px", marginRight: 8, background: "#f3f4f6", border: "1px solid #d1d5db", borderRadius: 6, cursor: "pointer", color: "#374151" }}
                         >
                           Edit
                         </button>

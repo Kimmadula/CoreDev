@@ -30,7 +30,7 @@ export default function SectionPage() {
     <div style={{ minHeight: "100vh", background: "#f9fafb" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "4rem 2rem" }}>
         <Link to="/" style={{
-          color: "#667eea",
+          color: "#ff6c00",
           textDecoration: "none",
           fontSize: "0.9rem",
           marginBottom: "2rem",
@@ -96,20 +96,20 @@ export default function SectionPage() {
                   display: "flex",
                   flexDirection: "column"
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.borderColor = "#667eea";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                }}>
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.borderColor = "#ff6c00";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                  }}>
                   <h3 style={{
                     margin: "0 0 0.75rem 0",
                     fontSize: "1.1rem",
-                    color: "#667eea",
+                    color: "#ff6c00",
                     fontWeight: "600"
                   }}>
                     {article.title}

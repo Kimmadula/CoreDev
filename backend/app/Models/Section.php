@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Section extends Model
 {
-    protected $fillable = ['product_id', 'title', 'slug'];
+    protected $fillable = ['product_id', 'title', 'slug', 'sort_order'];
 
     public function product(): BelongsTo
     {

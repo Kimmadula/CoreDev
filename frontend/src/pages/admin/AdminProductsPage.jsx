@@ -11,14 +11,15 @@ export default function AdminProductsPage() {
 
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
 
   const [autoSlug, setAutoSlug] = useState(true);
+
+  const [sortOrder, setSortOrder] = useState(0);
 
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
   const [editSlug, setEditSlug] = useState("");
-  const [editDescription, setEditDescription] = useState("");
+  const [editSortOrder, setEditSortOrder] = useState(0);
   const [editAutoSlug, setEditAutoSlug] = useState(false);
 
   useEffect(() => {
@@ -40,6 +41,8 @@ export default function AdminProductsPage() {
     setErr("");
     try {
       const data = await apiAdmin("/admin/products", { method: "GET" });
+      // Sort by sort_order ascending, then ID
+      data.sort((a, b) => (parseInt(a.sort_order) - parseInt(b.sort_order)) || (parseInt(a.id) - parseInt(b.id)));
       setItems(data);
     } catch (e) {
       setErr(String(e));
@@ -61,12 +64,12 @@ export default function AdminProductsPage() {
       const cleanSlug = slugify(slug);
       await apiAdmin("/admin/products", {
         method: "POST",
-        body: { name, slug: cleanSlug, description },
+        body: { name, slug: cleanSlug, sort_order: parseInt(sortOrder) || 0 },
       });
       setName("");
       setSlug("");
+      setSortOrder(0);
       setAutoSlug(true);
-      setDescription("");
       setSuccess("Product created successfully!");
       await load();
       setTimeout(() => setSuccess(""), 3000);
@@ -79,8 +82,8 @@ export default function AdminProductsPage() {
     setEditingId(product.id);
     setEditName(product.name);
     setEditSlug(product.slug);
+    setEditSortOrder(product.sort_order || 0);
     setEditAutoSlug(product.slug === slugify(product.name));
-    setEditDescription(product.description || "");
   }
 
   async function saveEdit() {
@@ -94,7 +97,7 @@ export default function AdminProductsPage() {
       const cleanSlug = slugify(editSlug);
       await apiAdmin(`/admin/products/${editingId}`, {
         method: "PUT",
-        body: { name: editName, slug: cleanSlug, description: editDescription },
+        body: { name: editName, slug: cleanSlug, sort_order: parseInt(editSortOrder) || 0 },
       });
       setEditingId(null);
       setSuccess("Product updated successfully!");
@@ -206,11 +209,12 @@ export default function AdminProductsPage() {
                 {autoSlug && slug && <p style={{ fontSize: "12px", color: "#6b7280", margin: "6px 0 0 0", fontStyle: "italic" }}>🔄 Auto-generated from name</p>}
               </div>
               <div>
-                <label style={{ display: "block", fontSize: isMobile ? "13px" : "14px", fontWeight: 600, marginBottom: 8, color: "#374151" }}>Description</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Enter a brief description of this product..."
+                <label style={{ display: "block", fontSize: isMobile ? "13px" : "14px", fontWeight: 600, marginBottom: 8, color: "#374151" }}>Sort Order</label>
+                <input
+                  type="number"
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  placeholder="0"
                   style={{
                     width: "100%",
                     padding: "12px 14px",
@@ -218,18 +222,13 @@ export default function AdminProductsPage() {
                     borderRadius: "8px",
                     fontSize: responsiveFontSize,
                     boxSizing: "border-box",
-                    fontFamily: "inherit",
                     transition: "all 0.2s",
-                    resize: "vertical",
-                    minHeight: isMobile ? "80px" : "100px",
                     background: "#fff",
                     color: "#000"
                   }}
-                  onFocus={(e) => { e.target.style.borderColor = "#4f46e5"; e.target.style.boxShadow = "0 0 0 3px rgba(79, 70, 229, 0.1)"; }}
-                  onBlur={(e) => { e.target.style.borderColor = "#d1d5db"; e.target.style.boxShadow = "none"; }}
-                  rows={4}
                 />
               </div>
+
               <button
                 onClick={create}
                 style={{
@@ -292,7 +291,8 @@ export default function AdminProductsPage() {
                               border: "1px solid #ddd",
                               fontSize: "15px",
                               boxSizing: "border-box",
-                              background: "#fff"
+                              background: "#fff",
+                              color: "#000"
                             }}
                           />
                         </div>
@@ -313,30 +313,31 @@ export default function AdminProductsPage() {
                               fontSize: "15px",
                               fontFamily: "monospace",
                               boxSizing: "border-box",
-                              background: "#fff"
+                              background: "#fff",
+                              color: "#000"
                             }}
                           />
                         </div>
-                        <div>
-                          <label style={{ display: "block", fontSize: "14px", fontWeight: 600, marginBottom: 8, color: "#374151" }}>Description</label>
-                          <textarea
-                            value={editDescription}
-                            onChange={(e) => setEditDescription(e.target.value)}
-                            placeholder="Description"
-                            style={{
-                              width: "100%",
-                              padding: "12px 14px",
-                              borderRadius: "8px",
-                              border: "1px solid #ddd",
-                              fontSize: "15px",
-                              boxSizing: "border-box",
-                              resize: "vertical",
-                              minHeight: "100px",
-                              background: "#fff"
-                            }}
-                            rows={4}
-                          />
-                        </div>
+
+                      </div>
+                      <div>
+                        <label style={{ display: "block", fontSize: "14px", fontWeight: 600, marginBottom: 8, color: "#374151" }}>Sort Order</label>
+                        <input
+                          type="number"
+                          value={editSortOrder}
+                          onChange={(e) => setEditSortOrder(e.target.value)}
+                          placeholder="0"
+                          style={{
+                            width: "100%",
+                            padding: "12px 14px",
+                            borderRadius: "8px",
+                            border: "1px solid #ddd",
+                            fontSize: "15px",
+                            boxSizing: "border-box",
+                            background: "#fff",
+                            color: "#000"
+                          }}
+                        />
                       </div>
                       <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
                         <button
@@ -394,13 +395,9 @@ export default function AdminProductsPage() {
                       <div style={{ marginBottom: 16 }}>
                         <h3 style={{ margin: "0 0 8px 0", fontSize: "18px", fontWeight: 700, color: "#1f2937" }}>{p.name}</h3>
                         <p style={{ margin: "0 0 8px 0", opacity: 0.6, fontSize: "14px", fontFamily: "monospace", color: "#666", background: "#f3f4f6", padding: "4px 8px", borderRadius: "4px", display: "inline-block" }}>
-                          /{p.slug}
+                          /{p.slug} <span style={{ marginLeft: "10px", color: "#999", fontSize: "12px" }}>Order: {p.sort_order}</span>
                         </p>
-                        {p.description && (
-                          <p style={{ margin: "8px 0 0 0", fontSize: "14px", color: "#6b7280", lineHeight: 1.6 }}>
-                            {p.description}
-                          </p>
-                        )}
+
                       </div>
                       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                         <button
@@ -469,6 +466,6 @@ export default function AdminProductsPage() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

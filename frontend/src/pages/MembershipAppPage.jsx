@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiGet } from "../api.js";
 import "./MembershipAppPage.css";
+import coreDevLogo from "../assets/coredevlogo.png";
 
 export default function MembershipAppPage() {
   const [product, setProduct] = useState(null);
@@ -29,7 +30,7 @@ export default function MembershipAppPage() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f9fafb" }}>
+    <div style={{ minHeight: "100vh", background: "#f9fafb", fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif" }}>
       {err && (
         <div style={{
           maxWidth: "1200px",
@@ -38,7 +39,9 @@ export default function MembershipAppPage() {
           background: "#fee",
           color: "#c33",
           borderRadius: "4px",
-          marginTop: "2rem"
+          marginTop: "6rem",
+          position: "relative",
+          zIndex: 1
         }}>
           {err}
         </div>
@@ -46,25 +49,37 @@ export default function MembershipAppPage() {
 
       {product && (
         <header style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white",
-          padding: "4rem 2rem",
-          textAlign: "center"
+          height: "50px",
+          background: "#353635",
+          borderBottom: "1px solid #444",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 15px",
+          justifyContent: "space-between",
+          flexShrink: 0,
+          zIndex: 1000,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          boxSizing: "border-box"
         }}>
-          <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-            <h1 style={{ fontSize: "2.5rem", marginBottom: "0.5rem", fontWeight: "700" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+            <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "5px" }}>
+              <div style={{ fontWeight: "700", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
+                <img src={coreDevLogo} alt="CoreDev Logo" style={{ height: "24px" }} />
+                <span><span style={{ color: "#ff6c00" }}>Core</span><span style={{ color: "#fff" }}>Dev</span></span>
+              </div>
+            </Link>
+            <div style={{ height: "20px", width: "1px", background: "#666" }}></div>
+            <h1 style={{ fontSize: "16px", fontWeight: "400", color: "#ddd", margin: 0 }}>
               {product.name}
             </h1>
-            {product.description && (
-              <p style={{ fontSize: "1.1rem", opacity: 0.95 }}>
-                {product.description}
-              </p>
-            )}
           </div>
         </header>
       )}
 
-      <main style={{ maxWidth: "1200px", margin: "0 auto", padding: "4rem 2rem" }}>
+      <main style={{ maxWidth: "1200px", margin: "0 auto", padding: "4rem 2rem", paddingTop: "80px" }}>
         <h2 style={{ fontSize: "1.8rem", marginBottom: "2rem", color: "#1a1a1a" }}>
           Guides
         </h2>
@@ -94,20 +109,20 @@ export default function MembershipAppPage() {
                   height: "100%",
                   boxSizing: "border-box"
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.borderColor = "#667eea";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.borderColor = "#e5e7eb";
-                }}>
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.borderColor = "#ff6c00";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.borderColor = "#e5e7eb";
+                  }}>
                   <h3 style={{
                     margin: "0 0 0.75rem 0",
                     fontSize: "1.2rem",
-                    color: "#667eea",
+                    color: "#ff6c00",
                     fontWeight: "600"
                   }}>
                     {sec.title}

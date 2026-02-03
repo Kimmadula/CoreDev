@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { apiGet } from "../api.js";
 import "./LandingPage.css";
-import kbLogo from "../assets/kb.png";
+import coreDevLogo from "../assets/coredevlogo.png";
+import bgImage from "../assets/bg2.jpg";
 
 export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,6 +13,7 @@ export default function LandingPage() {
   useEffect(() => {
     apiGet("/products")
       .then((data) => {
+        data.sort((a, b) => (parseInt(a.sort_order) - parseInt(b.sort_order)) || (parseInt(a.id) - parseInt(b.id)));
         setProducts(data);
         setLoading(false);
       })
@@ -28,10 +30,9 @@ export default function LandingPage() {
     let link = `/product/${slug}`;
 
     // Custom mappings
-    if (slug === "membership-app" || slug === "membership-application") {
-      icon = "👥";
-      link = "/membership-app";
-    } else if (slug === "iaccs-2013") {
+    if (slug === "iaccs-2013") {
+      icon = "📋";
+    } else if (slug === "farm-pro") {
       icon = "📋";
     } else if (slug === "farm-pro") {
       icon = "📍";
@@ -53,8 +54,8 @@ export default function LandingPage() {
       {/* Top Header */}
       <header style={{
         height: "50px",
-        background: "#ffffff",
-        borderBottom: "1px solid #ccc",
+        background: "#353635",
+        borderBottom: "1px solid #444",
         display: "flex",
         alignItems: "center",
         padding: "0 15px",
@@ -67,13 +68,13 @@ export default function LandingPage() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
           <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "5px" }}>
-            <div style={{ fontWeight: "700", color: "#005073", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
-              <img src={kbLogo} alt="CoreDev Logo" style={{ height: "24px" }} />
-              <span>CoreDev</span>
+            <div style={{ fontWeight: "700", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
+              <img src={coreDevLogo} alt="CoreDev Logo" style={{ height: "24px" }} />
+              <span><span style={{ color: "#ff6c00" }}>Core</span><span style={{ color: "#fff" }}>Dev</span></span>
             </div>
           </Link>
-          <div style={{ height: "20px", width: "1px", background: "#ddd" }}></div>
-          <h1 style={{ fontSize: "16px", fontWeight: "400", color: "#555", margin: 0 }}>
+          <div style={{ height: "20px", width: "1px", background: "#666" }}></div>
+          <h1 style={{ fontSize: "16px", fontWeight: "400", color: "#ddd", margin: 0 }}>
             Help Desk
           </h1>
         </div>
@@ -83,7 +84,12 @@ export default function LandingPage() {
       <div style={{ paddingTop: "50px" }}>
 
         {/* Hero Section */}
-        <section className="hero">
+        <section className="hero" style={{
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat"
+        }}>
           <div className="hero-content">
             <h1>Knowledge Base</h1>
             <p className="hero-subtitle">Explore and learn more about our products.</p>
