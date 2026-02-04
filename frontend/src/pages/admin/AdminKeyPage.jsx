@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { apiAdmin } from "../../api.js";
 
 export default function AdminKeyPage() {
   const [key, setKey] = useState(localStorage.getItem("ADMIN_KEY") || "");
   const [showPassword, setShowPassword] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [isHovering, setIsHovering] = useState(null);
+  const [loading, setLoading] = useState(false);
   const nav = useNavigate();
 
   const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -14,13 +15,30 @@ export default function AdminKeyPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  function save() {
+  async function save() {
     if (!key.trim()) {
       alert("Please enter an admin key");
       return;
     }
+
+    setLoading(true);
+    // 1. Temporarily save key
     localStorage.setItem("ADMIN_KEY", key.trim());
-    nav("/admin/products");
+
+    try {
+      // 2. Validate by making a request
+      await apiAdmin("/admin/products", { method: "GET" }); // Just try to fetch products
+
+      // 3. If successful, navigate
+      nav("/admin/products");
+    } catch (e) {
+      console.error(e);
+      // 4. If failed, remove key and alert
+      localStorage.removeItem("ADMIN_KEY");
+      alert("Invalid Admin Key. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const responsivePadding = isMobile ? "2rem 1.5rem" : "3rem 2.5rem";

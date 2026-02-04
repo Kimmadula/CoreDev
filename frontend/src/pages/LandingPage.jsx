@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { apiGet } from "../api.js";
 import "./LandingPage.css";
 import coreDevLogo from "../assets/coredevlogo.png";
-import bgImage from "../assets/bg2.jpg";
+import bgImage from "../assets/bg3.jpg";
 
 export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,6 +11,7 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Knowledge Base";
     apiGet("/products")
       .then((data) => {
         data.sort((a, b) => (parseInt(a.sort_order) - parseInt(b.sort_order)) || (parseInt(a.id) - parseInt(b.id)));
@@ -75,7 +76,7 @@ export default function LandingPage() {
           </Link>
           <div style={{ height: "20px", width: "1px", background: "#666" }}></div>
           <h1 style={{ fontSize: "16px", fontWeight: "400", color: "#ddd", margin: 0 }}>
-            Help Desk
+            Knowledge Base
           </h1>
         </div>
       </header>
@@ -118,6 +119,19 @@ export default function LandingPage() {
                 />
               </div>
             </div>
+          </div>
+
+          {/* Scroll Down Arrow - Moved outside hero-content to stick to bottom */}
+          <div
+            className="scroll-arrow"
+            onClick={() => {
+              const el = document.querySelector('.products-section');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+            </svg>
           </div>
         </section>
 

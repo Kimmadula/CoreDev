@@ -5,7 +5,7 @@ export default function PublicLayout() {
         <div style={{ fontFamily: "system-ui", padding: 16 }}>
             <header style={{ display: "flex", gap: 12, alignItems: "center" }}>
                 <Link to="/" style={{ fontWeight: 700, textDecoration: "none", color: "#333", fontSize: "1.2rem" }}>
-                    CoreDev Help
+                    CoreDev Knowledge Base
                 </Link>
             </header>
 

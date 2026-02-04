@@ -39,7 +39,28 @@ export default function AdminNavbar() {
                     </Link>
                 );
             })}
-            <Link to="/" style={{ marginLeft: "auto", textDecoration: "none", color: "#ccc", fontSize: "14px" }}>
+            <button
+                onClick={() => {
+                    if (window.confirm("Are you sure you want to logout?")) {
+                        localStorage.removeItem("ADMIN_KEY");
+                        window.location.href = "/admin";
+                    }
+                }}
+                style={{
+                    marginLeft: "auto",
+                    background: "#ef4444",
+                    color: "white",
+                    border: "none",
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    fontSize: "14px"
+                }}
+            >
+                Logout
+            </button>
+            <Link to="/" style={{ textDecoration: "none", color: "#ccc", fontSize: "14px" }}>
                 View Site &rarr;
             </Link>
         </div>

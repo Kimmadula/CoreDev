@@ -92,6 +92,39 @@ h1 {
   font-weight: 500;
 }
 
+/* Scroll Arrow */
+.scroll-arrow {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  /* or #ff7a59 if you want orange */
+  font-size: 2rem;
+  animation: bounce 2s infinite;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+@keyframes bounce {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  40% {
+    transform: translateX(-50%) translateY(-20px);
+  }
+
+  60% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
 /* Search Section */
 .search-container {
   margin-top: 2rem;

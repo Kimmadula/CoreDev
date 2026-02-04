@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { apiGet } from "../api.js";
+import ArticleContent from "../components/ArticleContent.jsx";
 import "./HelpDeskPage.css";
 
 export default function HelpDeskPage() {
   const [product, setProduct] = useState(null);
   const [sections, setSections] = useState([]);
-  const [activeSectionId, setActiveSectionId] = useState(null);
+  const [articles, setArticles] = useState([]);
+  const [viewingArticle, setViewingArticle] = useState(null); // The article currently being viewed
+  const [expandedSectionId, setExpandedSectionId] = useState(null); // The section expanded in sidebar
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -16,14 +19,31 @@ export default function HelpDeskPage() {
     Promise.all([
       apiGet("/products/help-desk"),
       apiGet("/products/help-desk/sections"),
+      apiGet("/articles") // Assuming we fetch all or filtered by product. For now fetching all and filtering client side if needed or assuming API handles it. 
+      // Ideally: apiGet("/products/help-desk/articles") or similar.
+      // Let's assum apiGet("/articles") returns all articles and we filter by section.
     ])
-      .then(([p, secs]) => {
+      .then(([p, secs, arts]) => {
         setProduct(p);
-        // Sort by ID Ascending (Oldest to Newest)
-        // Ensure IDs are treated as numbers
+
+        // Filter articles for this product's sections
+        // We need to know which sections belong to this product. 'secs' should be filtered by product already if the API does it, or we filter here.
+        // The previous code did: apiGet("/products/help-desk/sections"), assuming it returns sections for help-desk.
+
         const sortedSections = [...secs].sort((a, b) => (parseInt(a.sort_order) - parseInt(b.sort_order)) || (parseInt(a.id) - parseInt(b.id)));
         setSections(sortedSections);
-        if (sortedSections.length > 0) setActiveSectionId(sortedSections[0].id);
+        setArticles(arts);
+
+        // Default: Open first section and first article
+        if (sortedSections.length > 0) {
+          const firstSecId = sortedSections[0].id;
+          setExpandedSectionId(firstSecId);
+
+          const firstSecArticles = arts.filter(a => a.section_id === firstSecId);
+          if (firstSecArticles.length > 0) {
+            setViewingArticle(firstSecArticles[0]);
+          }
+        }
       })
       .catch((e) => setErr(String(e)))
       .finally(() => setLoading(false));
@@ -31,6 +51,8 @@ export default function HelpDeskPage() {
 
   if (loading) return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>Loading Course...</div>;
 
+  // Find active section based on viewingArticle
+  const activeSectionId = viewingArticle ? viewingArticle.section_id : null;
   const activeSection = sections.find(s => s.id === activeSectionId) || sections[0];
 
   return (
@@ -59,7 +81,7 @@ export default function HelpDeskPage() {
           <div style={{ height: "20px", width: "1px", background: "#666" }}></div>
 
           <h1 style={{ fontSize: "16px", fontWeight: "400", color: "#ddd", margin: 0 }}>
-            Product / {product?.name || "Help Desk"}
+            Product / {product?.name || "Knowledge Base"}
           </h1>
         </div>
 
@@ -98,17 +120,6 @@ export default function HelpDeskPage() {
               }}>
                 Course Outline
               </div>
-              <div style={{
-                flex: 1,
-                padding: "12px",
-                textAlign: "center",
-                color: "#666",
-                fontSize: "13px",
-                cursor: "pointer",
-                borderBottom: "1px solid transparent"
-              }}>
-                Resources
-              </div>
             </div>
 
             {/* Search Bar */}
@@ -129,17 +140,20 @@ export default function HelpDeskPage() {
             {/* Sections List */}
             <div style={{ flex: 1, overflowY: "auto", background: "#fff" }}>
               {sections.map((sec, index) => {
-                const isActive = activeSectionId === sec.id;
+                const isExpanded = expandedSectionId === sec.id;
+                const secArticles = articles.filter(a => a.section_id === sec.id);
+
                 return (
                   <div key={sec.id}>
                     {/* Collapsible Header */}
                     <div
-                      onClick={() => setActiveSectionId(sec.id)}
+                      onClick={() => {
+                        setExpandedSectionId(isExpanded ? null : sec.id); // Toggle expansion
+                      }}
                       style={{
                         padding: "12px 15px",
                         cursor: "pointer",
-                        background: isActive ? "#fff3e0" : "#fff",
-                        borderLeft: isActive ? "4px solid #ff6c00" : "4px solid transparent",
+                        background: isExpanded ? "#f5f5f5" : "#fff",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
@@ -149,59 +163,48 @@ export default function HelpDeskPage() {
                       <span style={{ fontWeight: "700", fontSize: "12px", color: "#333" }}>
                         Module {index + 1}: {sec.title}
                       </span>
-                      <span style={{ fontSize: "10px", color: isActive ? "#ff6c00" : "#aaa" }}>
-                        {isActive ? "▼" : "▶"}
+                      <span style={{ fontSize: "10px", color: "#aaa" }}>
+                        {isExpanded ? "▼" : "▶"}
                       </span>
                     </div>
 
-                    {/* Module Content Items */}
-                    {isActive && (
+                    {/* Module Content Items (Articles) */}
+                    {isExpanded && (
                       <div>
-                        {/* Static/Mock Sub-items for visual fidelity to image */}
-                        <div style={{
-                          padding: "8px 15px 8px 30px",
-                          fontSize: "12px",
-                          color: "#555",
-                          display: "flex", alignItems: "center", gap: "10px",
-                          borderBottom: "1px solid #fafafa"
-                        }}>
-                          <span style={{
-                            width: "10px", height: "10px",
-                            borderRadius: "50%",
-                            border: "1px solid #ccc",
-                            display: "inline-block"
-                          }}></span>
-                          {index + 1}.0.1 Introduction
-                        </div>
-
-                        <div style={{
-                          padding: "8px 15px 8px 30px",
-                          fontSize: "12px",
-                          color: "#000",
-                          fontWeight: "600",
-                          display: "flex", alignItems: "center", gap: "10px",
-                          background: "#fff3e0"
-                        }}>
-                          <span style={{
-                            width: "10px", height: "10px",
-                            borderRadius: "50%",
-                            background: "#fff",
-                            border: "3px solid #ff6c00",
-                            display: "inline-block"
-                          }}></span>
-                          {index + 1}.0.2 {sec.title} File Types
-                        </div>
-
-                        <div style={{
-                          padding: "8px 15px 8px 30px",
-                          fontSize: "12px",
-                          color: "#555",
-                          display: "flex", alignItems: "center", gap: "10px",
-                          borderBottom: "1px solid #fafafa"
-                        }}>
-                          <span style={{ width: "10px", height: "10px", borderRadius: "50%", border: "1px solid #ccc", display: "inline-block" }}></span>
-                          {index + 1}.0.3 Assessment
-                        </div>
+                        {secArticles.length === 0 && (
+                          <div style={{ padding: "10px 15px", fontSize: "11px", color: "#999", fontStyle: "italic" }}>
+                            No articles.
+                          </div>
+                        )}
+                        {secArticles.map((art) => {
+                          const isActive = viewingArticle && viewingArticle.id === art.id;
+                          return (
+                            <div
+                              key={art.id}
+                              onClick={() => setViewingArticle(art)}
+                              style={{
+                                padding: "8px 15px 8px 30px",
+                                fontSize: "12px",
+                                color: isActive ? "#000" : "#555",
+                                fontWeight: isActive ? "600" : "400",
+                                display: "flex", alignItems: "center", gap: "10px",
+                                background: isActive ? "#fff3e0" : "#fff",
+                                borderBottom: "1px solid #fafafa",
+                                cursor: "pointer",
+                                borderLeft: isActive ? "3px solid #ff6c00" : "3px solid transparent"
+                              }}
+                            >
+                              <span style={{
+                                width: "8px", height: "8px",
+                                borderRadius: "50%",
+                                background: isActive ? "#fff" : "transparent",
+                                border: isActive ? "2px solid #ff6c00" : "1px solid #ccc",
+                                display: "inline-block"
+                              }}></span>
+                              {art.title}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -222,17 +225,21 @@ export default function HelpDeskPage() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "0 15px"
+            padding: "0 15px",
+            zIndex: 5,
+            position: "relative"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                style={{ border: "none", background: "none", cursor: "pointer", fontSize: "16px", color: "#666" }}
+                style={{ border: "none", background: "none", cursor: "pointer", fontSize: "16px", color: isSidebarOpen ? "#ff6c00" : "#666" }}
+                title="Toggle Sidebar"
               >
                 ☰
               </button>
               <span style={{ fontSize: "12px", color: "#666" }}>
-                {activeSection ? `2.0.1 ${activeSection.title} File Types` : "Welcome"}
+                {activeSection ? `${activeSection.title}` : ""}
+                {viewingArticle ? ` / ${viewingArticle.title}` : ""}
               </span>
             </div>
 
@@ -245,68 +252,31 @@ export default function HelpDeskPage() {
           </div>
 
           {/* Content Scroll Area */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "40px 60px" }}>
-            <div style={{ maxWidth: "900px", margin: "0 auto", background: "#fff", padding: "40px", boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
-              {activeSection ? (
+          <div style={{ flex: 1, overflowY: "auto", padding: "20px 30px" }}>
+            <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+              {viewingArticle ? (
                 <>
                   <h2 style={{ fontSize: "28px", fontWeight: "700", marginBottom: "30px", color: "#222" }}>
-                    2.0.1 {activeSection.title} File Types
+                    {viewingArticle.title}
                   </h2>
 
-                  <p style={{ lineHeight: "1.7", color: "#333", marginBottom: "20px", fontSize: "15px" }}>
-                    We hope you enjoyed the <strong>{product?.name || "course"}</strong> activity in the previous module.
-                    In that part, you learned how to navigate both the logical and physical interface, identify devices,
-                    and explore connection types.
-                  </p>
-
-                  <p style={{ lineHeight: "1.7", color: "#333", marginBottom: "20px", fontSize: "15px" }}>
-                    Speaking of data types, it is important to understand the different file types you will find when using the system.
-                  </p>
-
                   <div style={{
-                    borderLeft: "4px solid #ff6c00",
-                    padding: "15px",
-                    background: "#fff3e0",
-                    marginBottom: "30px",
-                    color: "#e65100",
-                    fontSize: "14px"
+                    color: "#999", fontSize: "12px", marginBottom: "20px", borderBottom: "1px solid #eee", paddingBottom: "10px"
                   }}>
-                    <strong>Note:</strong> {activeSection.description || "The system creates four different types of files. These file types are used for different purposes."}
+                    Last updated: {new Date(viewingArticle.updated_at).toLocaleDateString()}
                   </div>
 
-                  {/* Accordion Mocks */}
-                  {["The .pka File Type", "The .pkt File Type", "The .pksz File Type", "The .pkz File Type"].map((item, i) => (
-                    <div key={i} style={{
-                      border: "1px solid #eee",
-                      borderRadius: "4px",
-                      marginBottom: "10px",
-                      overflow: "hidden"
-                    }}>
-                      <div style={{
-                        padding: "15px 20px",
-                        background: "#fbfbfb",
-                        cursor: "pointer",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        fontWeight: "500",
-                        fontSize: "14px",
-                        color: "#444"
-                      }}>
-                        {item}
-                        <span>⌄</span>
-                      </div>
-                    </div>
-                  ))}
+                  <ArticleContent content={viewingArticle.content} />
                 </>
               ) : (
                 <div style={{ textAlign: "center", padding: "50px", color: "#999" }}>
-                  Select a module from the course outline to begin.
+                  Select an article from the course outline to begin.
                 </div>
               )}
             </div>
           </div>
 
-          {/* Floating Navigation Arrows */}
+          {/* Floating Navigation Arrows (Optional: Implement Logic later) */}
           <button style={{
             position: "absolute",
             left: "0", top: "50%",
