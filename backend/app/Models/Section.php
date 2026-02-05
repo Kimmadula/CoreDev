@@ -19,4 +19,9 @@ class Section extends Model
     {
         return $this->hasMany(Article::class);
     }
+
+    public function subSections(): HasMany
+    {
+        return $this->hasMany(SubSection::class);
+    }
 }

@@ -8,7 +8,23 @@ import bgImage from "../assets/bg3.jpg";
 export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState([]);
+  const [searchResults, setSearchResults] = useState([]); // For dropdown
   const [loading, setLoading] = useState(true);
+
+  // Debounce search
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery.length > 1) {
+        apiGet(`/search?q=${searchQuery}`)
+          .then(data => setSearchResults(data))
+          .catch(err => console.error(err));
+      } else {
+        setSearchResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
 
   useEffect(() => {
     document.title = "Knowledge Base";
@@ -113,10 +129,50 @@ export default function LandingPage() {
                 </svg>
                 <input
                   type="search"
-                  placeholder="Search for products..."
+                  placeholder="Search keyword..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ width: "100%", outline: "none", color: "#000" }}
                 />
+
+                {/* Search Dropdown Results */}
+                {searchResults.length > 0 && (
+                  <div className="search-dropdown" style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    right: 0,
+                    background: "white",
+                    borderRadius: "0 0 8px 8px",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                    maxHeight: "300px",
+                    overflowY: "auto",
+                    zIndex: 50,
+                    marginTop: "5px",
+                    textAlign: "left"
+                  }}>
+                    {searchResults.map((res, idx) => (
+                      <Link to={res.link} key={idx} style={{ textDecoration: 'none' }} onClick={() => setSearchResults([])}>
+                        <div style={{
+                          padding: "12px 20px",
+                          borderBottom: "1px solid #f0f0f0",
+                          display: "flex",
+                          flexDirection: "column",
+                          cursor: "pointer",
+                          transition: "background 0.2s"
+                        }}
+                          onMouseOver={(e) => e.currentTarget.style.background = "#f9f9f9"}
+                          onMouseOut={(e) => e.currentTarget.style.background = "white"}
+                        >
+                          <div style={{ color: "#333", fontWeight: "600", fontSize: "14px" }}>{res.title}</div>
+                          <div style={{ color: "#888", fontSize: "11px", textTransform: 'uppercase' }}>
+                            {res.type} {res.subtitle ? `• ${res.subtitle}` : ''}
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -23,7 +23,8 @@ class ArticleAdminController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'section_id' => 'required|exists:sections,id',
+            'sub_section_id' => 'required|exists:sub_sections,id',
+            'section_id' => 'nullable|exists:sections,id',
             'title' => 'required|string|max:255',
             'slug' => 'required|string|unique:articles,slug',
             'content' => 'required|string',
@@ -38,7 +39,8 @@ class ArticleAdminController extends Controller
     public function update(Request $request, Article $article)
     {
         $validated = $request->validate([
-            'section_id' => 'sometimes|required|exists:sections,id',
+            'sub_section_id' => 'sometimes|required|exists:sub_sections,id',
+            'section_id' => 'nullable|exists:sections,id',
             'title' => 'sometimes|required|string|max:255',
             'slug' => 'sometimes|required|string|unique:articles,slug,' . $article->id,
             'content' => 'sometimes|required|string',

@@ -1,68 +1,108 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { apiGet } from "../api.js";
 
 export default function AdminNavbar() {
     const location = useLocation();
+    const [products, setProducts] = useState([]);
 
-    const navItems = [
-        { label: "Products", path: "/admin/products" },
-        { label: "Sections", path: "/admin/sections" },
-        { label: "Articles", path: "/admin/articles" },
-    ];
+    // Dropdown States
+    const [showAddMenu, setShowAddMenu] = useState(false);
+
+    useEffect(() => {
+        apiGet("/products").then(setProducts).catch(console.error);
+    }, []);
+
+    // Styles for Dropdown
+    const dropdownStyle = {
+        position: "absolute",
+        top: "100%",
+        display: "block",
+        left: 0,
+        background: "#2c2d2c",
+        border: "1px solid #444",
+        borderRadius: "6px",
+        minWidth: "200px",
+        padding: "5px 0",
+        zIndex: 1000,
+        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
+    };
+
+    const itemStyle = {
+        display: "block",
+        padding: "8px 16px",
+        color: "#ccc",
+        textDecoration: "none",
+        fontSize: "0.9rem",
+        cursor: "pointer",
+        transition: "background 0.2s"
+    };
 
     return (
         <div style={{
             background: "#353635",
             borderBottom: "1px solid #444",
-            padding: "15px 40px",
+            padding: "0 40px",
+            height: "60px",
             marginBottom: "20px",
             display: "flex",
             alignItems: "center",
-            gap: "20px"
+            justifyContent: "space-between"
         }}>
-            <h3 style={{ margin: 0, marginRight: "20px", color: "#fff" }}>Admin Panel</h3>
-            {navItems.map(item => {
-                const isActive = location.pathname.startsWith(item.path);
-                return (
-                    <Link
-                        key={item.path}
-                        to={item.path}
-                        style={{
-                            textDecoration: "none",
-                            color: isActive ? "#fff" : "#ccc",
-                            fontWeight: isActive ? "700" : "500",
-                            padding: "8px 12px",
-                            borderRadius: "6px",
-                            background: isActive ? "#4f46e5" : "transparent"
-                        }}
-                    >
-                        {item.label}
-                    </Link>
-                );
-            })}
-            <button
-                onClick={() => {
-                    if (window.confirm("Are you sure you want to logout?")) {
-                        localStorage.removeItem("ADMIN_KEY");
-                        window.location.href = "/admin";
-                    }
-                }}
-                style={{
-                    marginLeft: "auto",
-                    background: "#ef4444",
-                    color: "white",
-                    border: "none",
-                    padding: "8px 16px",
-                    borderRadius: "6px",
-                    cursor: "pointer",
-                    fontWeight: "600",
-                    fontSize: "14px"
-                }}
-            >
-                Logout
-            </button>
-            <Link to="/" style={{ textDecoration: "none", color: "#ccc", fontSize: "14px" }}>
-                View Site &rarr;
-            </Link>
+            {/* LEFT SIDE */}
+            <div style={{ display: "flex", alignItems: "center", gap: "20px", height: "100%" }}>
+                <Link to="/admin" style={{ textDecoration: "none" }}>
+                    <h3 style={{ margin: 0, marginRight: "10px", color: "#fff" }}>Admin</h3>
+                </Link>
+
+                {/* PRODUCTS LINK (SIMPLE) */}
+                <Link
+                    to="/admin/products"
+                    style={{
+                        color: "#fff",
+                        fontWeight: "500",
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        height: "100%",
+                        padding: "0 10px",
+                        borderBottom: location.pathname.startsWith('/admin/products') || location.pathname.startsWith('/admin/product-view') ? "2px solid #fbbf24" : "2px solid transparent"
+                    }}
+                    onMouseEnter={e => e.target.style.color = "#fbbf24"}
+                    onMouseLeave={e => e.target.style.color = "#fff"}
+                >
+                    Products
+                </Link>
+
+                {/* ADD BUTTON REMOVED */}
+            </div>
+
+            {/* RIGHT SIDE */}
+            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                <button
+                    onClick={() => {
+                        if (window.confirm("Are you sure you want to logout?")) {
+                            localStorage.removeItem("ADMIN_KEY");
+                            window.location.href = "/admin";
+                        }
+                    }}
+                    style={{
+                        background: "#ef4444",
+                        color: "white",
+                        border: "none",
+                        padding: "6px 14px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                        fontSize: "13px"
+                    }}
+                >
+                    Logout
+                </button>
+                <Link to="/" style={{ textDecoration: "none", color: "#ccc", fontSize: "14px" }}>
+                    View Site &rarr;
+                </Link>
+            </div>
         </div>
     );
 }

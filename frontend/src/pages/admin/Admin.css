@@ -222,6 +222,9 @@
     border-top-right-radius: var(--radius-md);
     background: #f8fafc;
     border-color: var(--admin-border) !important;
+    position: sticky;
+    top: 0;
+    z-index: 40;
 }
 
 .ql-editor {

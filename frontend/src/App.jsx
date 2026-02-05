@@ -12,6 +12,8 @@ import AdminKeyPage from "./pages/admin/AdminKeyPage.jsx";
 import AdminProductsPage from "./pages/admin/AdminProductsPage.jsx";
 import AdminSectionsPage from "./pages/admin/AdminSectionsPage.jsx";
 import AdminArticlesPage from "./pages/admin/AdminArticlesPage.jsx";
+import AdminProductView from "./pages/admin/AdminProductView.jsx";
+import AdminSectionView from "./pages/admin/AdminSectionView.jsx";
 
 export default function App() {
   return (
@@ -33,6 +35,8 @@ export default function App() {
       <Route path="/admin/products" element={<AdminProductsPage />} />
       <Route path="/admin/sections" element={<AdminSectionsPage />} />
       <Route path="/admin/articles" element={<AdminArticlesPage />} />
+      <Route path="/admin/product-view/:id" element={<AdminProductView />} />
+      <Route path="/admin/section-view/:id" element={<AdminSectionView />} />
 
       {/* Standalone Pages (Full Screen) */}
       <Route path="/helpdesk" element={<HelpDeskPage />} />

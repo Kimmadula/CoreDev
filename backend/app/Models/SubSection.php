@@ -4,18 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Article extends Model
+class SubSection extends Model
 {
-    protected $fillable = ['section_id', 'sub_section_id', 'title', 'slug', 'content'];
+    protected $fillable = ['section_id', 'title', 'slug', 'sort_order'];
 
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
     }
 
-    public function subSection(): BelongsTo
+    public function articles(): HasMany
     {
-        return $this->belongsTo(SubSection::class);
+        return $this->hasMany(Article::class);
     }
 }

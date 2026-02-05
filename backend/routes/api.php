@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\PublicController;
 use App\Http\Controllers\Api\Admin\ProductAdminController;
 use App\Http\Controllers\Api\Admin\SectionAdminController;
 use App\Http\Controllers\Api\Admin\ArticleAdminController;
+use App\Http\Controllers\Api\Admin\SubSectionAdminController;
 
 // PUBLIC
 Route::get('/products', [PublicController::class, 'products']);
@@ -13,6 +14,7 @@ Route::get('/products/{slug}/sections', [PublicController::class, 'productSectio
 Route::get('/sections/{slug}', [PublicController::class, 'section']);
 Route::get('/sections/{slug}/articles', [PublicController::class, 'sectionArticles']);
 Route::get('/articles/{slug}', [PublicController::class, 'article']);
+Route::get('/search', [PublicController::class, 'search']);
 
 // ADMIN (protected)
 Route::middleware('admin.key')->prefix('admin')->group(function () {
@@ -30,6 +32,11 @@ Route::middleware('admin.key')->prefix('admin')->group(function () {
   Route::post('/articles', [ArticleAdminController::class, 'store']);
   Route::put('/articles/{article}', [ArticleAdminController::class, 'update']);
   Route::delete('/articles/{article}', [ArticleAdminController::class, 'destroy']);
+
+  Route::get('/sub-sections', [SubSectionAdminController::class, 'index']);
+  Route::post('/sub-sections', [SubSectionAdminController::class, 'store']);
+  Route::put('/sub-sections/{subSection}', [SubSectionAdminController::class, 'update']);
+  Route::delete('/sub-sections/{subSection}', [SubSectionAdminController::class, 'destroy']);
 });
 
 

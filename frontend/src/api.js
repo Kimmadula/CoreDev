@@ -16,6 +16,7 @@ export async function apiAdmin(path, { method = "POST", body } = {}) {
     method,
     headers: {
       "Content-Type": "application/json",
+      "Accept": "application/json",
       "X-ADMIN-KEY": key,
     },
     body: body ? JSON.stringify(body) : undefined,

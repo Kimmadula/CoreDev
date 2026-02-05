@@ -12,17 +12,22 @@ export default function ArticleContent({ content }) {
         let processedIdx = content;
 
         try {
-            // 1. Strip borders and shadows to fix "box thingy", but ALLOW backgrounds (for highlights)
-            // processedIdx = processedIdx.replace(/background-color:\s*[^;]+;?/gi, '');
-            // processedIdx = processedIdx.replace(/background:\s*[^;]+;?/gi, '');
+            // 1. FIX NON-BREAKING SPACES - This is the main cause of word breaks!
+            processedIdx = processedIdx.replace(/&nbsp;/g, ' ');
+            processedIdx = processedIdx.replace(/\u00A0/g, ' '); // Unicode non-breaking space
+
+            // 1b. Collapse multiple spaces into single spaces
+            processedIdx = processedIdx.replace(/\s{2,}/g, ' ');
+
+            // 2. Strip borders and shadows to fix "box thingy", but ALLOW backgrounds (for highlights)
             processedIdx = processedIdx.replace(/border(-[a-z]+)?:\s*[^;]+;?/gi, '');
             processedIdx = processedIdx.replace(/box-shadow:\s*[^;]+;?/gi, '');
 
-            // 2. Fix legacy alignment classes
+            // 3. Fix legacy alignment classes
             processedIdx = processedIdx.replace(/ql-align-justify/g, 'ql-align-left');
             processedIdx = processedIdx.replace(/text-align:\s*justify/gi, 'text-align: left');
 
-            // 3. Inject Robust CSS for Lists and Typography
+            // 4. Inject Robust CSS for Lists and Typography
             const styleFix = `<style>
         /* Force Reset - Scoped to Custom Viewer */
         .custom-article-content .ql-editor ul, .custom-article-content .ql-editor ol { margin: 0 0 1em 0 !important; padding: 0 !important; list-style: none !important; }
@@ -76,7 +81,7 @@ export default function ArticleContent({ content }) {
             content: counter(ql-ol-2, lower-alpha) ".";
         }
 
-        /* Safe Paragraphs & Text Alignment Enforcement */
+        /* Safe Paragraphs & Text Alignment Enforcement - FIXED WORD BREAKING */
         .custom-article-content .ql-editor p, 
         .custom-article-content .ql-editor div, 
         .custom-article-content .ql-editor span,
@@ -85,18 +90,27 @@ export default function ArticleContent({ content }) {
         .custom-article-content .ql-editor h3,
         .custom-article-content .ql-editor h4,
         .custom-article-content .ql-editor h5,
-        .custom-article-content .ql-editor h6 { 
+        .custom-article-content .ql-editor h6,
+        .custom-article-content .ql-editor li { 
           hyphens: none !important; 
           -webkit-hyphens: none !important;
           word-break: normal !important;
-          overflow-wrap: normal !important;
+          overflow-wrap: break-word !important;
+          word-wrap: break-word !important;
           text-align: left !important;
           text-justify: none !important;
+          white-space: normal !important;
+        }
+        
+        /* Ensure all text nodes wrap properly */
+        .custom-article-content * {
+          word-break: normal !important;
+          overflow-wrap: break-word !important;
         }
       </style>`;
             processedIdx = styleFix + processedIdx;
 
-            // 4. Parse HTML to handle YouTube video embedding AND Content Cleaning safely
+            // 5. Parse HTML to handle YouTube video embedding AND Content Cleaning safely
             const parser = new DOMParser();
             const doc = parser.parseFromString(processedIdx, 'text/html');
 
@@ -112,12 +126,13 @@ export default function ArticleContent({ content }) {
                 }
 
                 // B. Fix Double Numbering: "10. Head office" -> "Head office"
-                const match = text.match(/^([0-9]{1,3}\.|[a-zA-Z]\.|[•–—-])\s+(.*)/);
-                if (match) {
-                    if (li.firstChild && li.firstChild.nodeType === 3) { // Text node
-                        li.firstChild.textContent = li.firstChild.textContent.replace(/^([0-9]{1,3}\.|[a-zA-Z]\.|[•–—-])\s+/, '');
-                    } else {
-                        li.innerHTML = li.innerHTML.replace(/^([0-9]{1,3}\.|[a-zA-Z]\.|[•–—-])\s+/, '');
+                // IMPROVED: Only remove if it's genuinely a duplicate number at the start
+                const firstChild = li.firstChild;
+                if (firstChild && firstChild.nodeType === Node.TEXT_NODE) {
+                    const textContent = firstChild.textContent;
+                    const match = textContent.match(/^([0-9]{1,3}\.|[a-zA-Z]\.|[•–—-])\s+/);
+                    if (match) {
+                        firstChild.textContent = textContent.replace(/^([0-9]{1,3}\.|[a-zA-Z]\.|[•–—-])\s+/, '');
                     }
                 }
             });
@@ -130,13 +145,16 @@ export default function ArticleContent({ content }) {
                     el.style.textAlign = 'left';
                 }
 
-                // ALLOW BACKGROUNDS AND COLORS NOW
-                // We previously stripped them here. Now we just ensure empty styles are cleaned up.
+                // Remove any word-break or overflow settings that might cause issues
+                el.style.wordBreak = '';
+                el.style.overflowWrap = '';
+                el.style.wordWrap = '';
 
                 if (el.getAttribute('style') === '') {
                     el.removeAttribute('style');
                 }
             });
+
             const links = Array.from(doc.querySelectorAll('a'));
             links.forEach(link => {
                 const href = link.getAttribute('href');
@@ -187,7 +205,8 @@ export default function ArticleContent({ content }) {
             color: "#000",
             maxWidth: "100%",
             wordBreak: "normal",
-            overflowWrap: "anywhere", /* Better for mobile, but 'normal' requested to not cut. Let's stick to normal as per request but ensure nice break */
+            overflowWrap: "break-word",
+            wordWrap: "break-word",
             whiteSpace: "normal",
             textAlign: "left",
             hyphens: "none",

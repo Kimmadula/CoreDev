@@ -51,8 +51,9 @@ export default function ProductPage() {
         let foundSectionId = null;
 
         if (articleParam) {
-          // Find the article in the sections
+          // Find the article in the sections (and sub-sections)
           for (const sec of sortedSections) {
+            // 1. Check direct articles
             if (sec.articles) {
               const match = sec.articles.find(a => String(a.id) === articleParam);
               if (match) {
@@ -61,6 +62,20 @@ export default function ProductPage() {
                 break;
               }
             }
+            // 2. Check sub-sections
+            if (!foundArticle && sec.sub_sections) {
+              for (const sub of sec.sub_sections) {
+                if (sub.articles) {
+                  const match = sub.articles.find(a => String(a.id) === articleParam);
+                  if (match) {
+                    foundArticle = match;
+                    foundSectionId = sec.id;
+                    break;
+                  }
+                }
+              }
+            }
+            if (foundArticle) break;
           }
         }
 
@@ -68,13 +83,27 @@ export default function ProductPage() {
           setActiveArticle(foundArticle);
           setExpandedSectionId(foundSectionId);
         } else {
-          // Default Selection Logic
-          if (sortedSections.length > 0) {
-            setExpandedSectionId(sortedSections[0].id);
-            if (sortedSections[0].articles && sortedSections[0].articles.length > 0) {
-              setActiveArticle(sortedSections[0].articles[0]);
-              // Update URL to match default
-              setSearchParams({ article: sortedSections[0].articles[0].id }, { replace: true });
+          // Check for Section ID param
+          const sectionParam = searchParams.get("section");
+          if (sectionParam) {
+            const targetSection = sortedSections.find(s => String(s.id) === sectionParam);
+            if (targetSection) {
+              setExpandedSectionId(targetSection.id);
+              // Optional: Auto-select first article of that section if desired?
+              // For now, just expand section as requested.
+            } else {
+              // Fallback if section bad
+              if (sortedSections.length > 0) setExpandedSectionId(sortedSections[0].id);
+            }
+          } else {
+            // Default Selection Logic
+            if (sortedSections.length > 0) {
+              setExpandedSectionId(sortedSections[0].id);
+              if (sortedSections[0].articles && sortedSections[0].articles.length > 0) {
+                setActiveArticle(sortedSections[0].articles[0]);
+                // Update URL to match default
+                setSearchParams({ article: sortedSections[0].articles[0].id }, { replace: true });
+              }
             }
           }
         }
@@ -170,41 +199,48 @@ export default function ProductPage() {
                     </span>
                   </div>
 
-                  {/* Articles List */}
+                  {/* Sub Sections List (Clickable directly) */}
                   {isExpanded && (
                     <div style={{ background: "#fafafa" }}>
-                      {sec.articles && sec.articles.length > 0 ? (
-                        sec.articles.map((article, aIndex) => {
-                          const isActive = activeArticle && activeArticle.id === article.id;
+                      {sec.sub_sections && sec.sub_sections.length > 0 ? (
+                        sec.sub_sections.map((sub, subIndex) => {
+                          const hasArticles = sub.articles && sub.articles.length > 0;
+                          // Check if the ACTIVE article belongs to this sub-section
+                          const isActive = activeArticle && sub.articles && sub.articles.some(a => a.id === activeArticle.id);
+
                           return (
                             <div
-                              key={article.id}
-                              onClick={() => handleArticleClick(article, sec.id)}
+                              key={sub.id}
+                              onClick={() => {
+                                if (hasArticles) {
+                                  handleArticleClick(sub.articles[0], sec.id);
+                                }
+                              }}
                               style={{
                                 padding: "10px 15px 10px 25px",
-                                fontSize: "12px",
+                                fontSize: "13px",
                                 color: isActive ? "#000" : "#555",
                                 fontWeight: isActive ? "600" : "400",
-                                backgroundColor: isActive ? "#fff3e0" : "transparent",
-                                display: "flex", alignItems: "center", gap: "10px",
+                                backgroundColor: isActive ? "#fff3e0" : "#fbfbfb",
+                                borderLeft: isActive ? "3px solid #ff6c00" : "3px solid transparent",
+                                borderBottom: "1px solid #eaeaea",
                                 cursor: "pointer",
-                                borderBottom: "1px solid #fafafa"
-                              }}
-                            >
+                                display: "flex", alignItems: "center", gap: "10px",
+                                transition: "all 0.2s"
+                              }}>
                               <span style={{
-                                width: "10px", height: "10px",
+                                width: "6px", height: "6px",
                                 borderRadius: "50%",
-                                background: isActive ? "#fff" : "transparent",
-                                border: isActive ? "3px solid #ff6c00" : "1px solid #ccc",
+                                background: isActive ? "#ff6c00" : "#ccc",
                                 display: "inline-block"
                               }}></span>
-                              {index + 1}.{aIndex + 1} {article.title}
+                              {sub.title}
                             </div>
                           );
                         })
                       ) : (
                         <div style={{ padding: "10px 25px", fontSize: "12px", color: "#999", fontStyle: "italic" }}>
-                          No articles yet.
+                          No sub sections.
                         </div>
                       )}
                     </div>
