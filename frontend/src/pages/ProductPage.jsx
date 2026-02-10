@@ -115,7 +115,9 @@ export default function ProductPage() {
   // Handle article click
   const handleArticleClick = (article, sectionId) => {
     setActiveArticle(article);
-    setIsSidebarOpen(false); // Auto-close sidebar on mobile
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false); // Auto-close sidebar on mobile only
+    }
     setSearchParams({ article: article.id });
   };
 
@@ -131,7 +133,14 @@ export default function ProductPage() {
           <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "5px" }}>
             <div style={{ fontWeight: "700", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
               <img src={coreDevLogo} alt="CoreDev Logo" style={{ height: "24px" }} />
-              <span><span style={{ color: "#ff6c00" }}>Core</span><span style={{ color: "#fff" }}>Dev</span></span>
+              <div style={{ display: "flex", flexDirection: "column", lineHeight: "1", justifyContent: "center" }}>
+                <div style={{ fontWeight: "700", fontSize: "16px" }}>
+                  <span style={{ color: "#ff6c00" }}>Core</span><span style={{ color: "#fff" }}>Dev</span>
+                </div>
+                <div style={{ fontSize: "10px", color: "#ccc", fontWeight: "400", letterSpacing: "0.5px" }}>
+                  Solutions Inc.
+                </div>
+              </div>
             </div>
           </Link>
           <div style={{ height: "20px", width: "1px", background: "#666" }}></div>
@@ -167,90 +176,59 @@ export default function ProductPage() {
       <div className="product-page-main">
 
         {/* Sidebar Navigation */}
-        <aside className={`product-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          <div style={{ display: "flex", borderBottom: "1px solid #ddd" }}></div>
+        {/* Sidebar Navigation */}
+        {isSidebarOpen && (
+          <aside className="product-sidebar open">
+            {/* Sidebar branding or header if needed, but keeping it clean per CSS structure */}
 
-          <div style={{ padding: "10px", borderBottom: "1px solid #eee" }}>
-            <input placeholder="search section" style={{ width: "100%", padding: "6px 10px", borderRadius: "20px", border: "1px solid #ddd", fontSize: "12px", background: "#fff" }} />
-          </div>
+            <div className="sidebar-menu">
+              {sections.map((sec, index) => {
+                const isExpanded = expandedSectionId === sec.id;
+                return (
+                  <div key={sec.id} className="menu-section">
+                    {/* Collapsible Header */}
+                    <button
+                      className={`menu-item ${isExpanded ? 'expanded' : ''}`}
+                      onClick={() => setExpandedSectionId(isExpanded ? null : sec.id)}
+                    >
+                      <span className="item-text">{sec.title}</span>
+                      <span className="chevron">▼</span>
+                    </button>
 
-          <div style={{ flex: 1, overflowY: "auto", background: "#fff" }}>
-            {sections.map((sec, index) => {
-              const isExpanded = expandedSectionId === sec.id;
-              return (
-                <div key={sec.id}>
-                  {/* Collapsible Header */}
-                  <div
-                    onClick={() => setExpandedSectionId(isExpanded ? null : sec.id)}
-                    style={{
-                      padding: "12px 15px",
-                      cursor: "pointer",
-                      background: isExpanded ? "#fff3e0" : "#fff",
-                      borderLeft: isExpanded ? "4px solid #ff6c00" : "4px solid transparent",
-                      display: "flex", alignItems: "center", justifyContent: "space-between",
-                      borderBottom: "1px solid #f5f5f5",
-                    }}
-                  >
-                    <span style={{ fontWeight: "700", fontSize: "12px", color: "#333" }}>
-                      {sec.title}
-                    </span>
-                    <span style={{ fontSize: "10px", color: isExpanded ? "#ff6c00" : "#aaa" }}>
-                      {isExpanded ? "▼" : "▶"}
-                    </span>
-                  </div>
-
-                  {/* Sub Sections List (Clickable directly) */}
-                  {isExpanded && (
-                    <div style={{ background: "#fafafa" }}>
+                    {/* Sub Sections - using Submenu structure */}
+                    <div className={`submenu ${isExpanded ? 'open' : ''}`}>
                       {sec.sub_sections && sec.sub_sections.length > 0 ? (
                         sec.sub_sections.map((sub, subIndex) => {
                           const hasArticles = sub.articles && sub.articles.length > 0;
-                          // Check if the ACTIVE article belongs to this sub-section
                           const isActive = activeArticle && sub.articles && sub.articles.some(a => a.id === activeArticle.id);
 
                           return (
                             <div
                               key={sub.id}
+                              className={`submenu-item ${isActive ? 'active' : ''}`}
                               onClick={() => {
                                 if (hasArticles) {
                                   handleArticleClick(sub.articles[0], sec.id);
                                 }
                               }}
-                              style={{
-                                padding: "10px 15px 10px 25px",
-                                fontSize: "13px",
-                                color: isActive ? "#000" : "#555",
-                                fontWeight: isActive ? "600" : "400",
-                                backgroundColor: isActive ? "#fff3e0" : "#fbfbfb",
-                                borderLeft: isActive ? "3px solid #ff6c00" : "3px solid transparent",
-                                borderBottom: "1px solid #eaeaea",
-                                cursor: "pointer",
-                                display: "flex", alignItems: "center", gap: "10px",
-                                transition: "all 0.2s"
-                              }}>
-                              <span style={{
-                                width: "6px", height: "6px",
-                                borderRadius: "50%",
-                                background: isActive ? "#ff6c00" : "#ccc",
-                                display: "inline-block"
-                              }}></span>
+                            >
                               {sub.title}
                             </div>
                           );
                         })
                       ) : (
-                        <div style={{ padding: "10px 25px", fontSize: "12px", color: "#999", fontStyle: "italic" }}>
+                        <div style={{ padding: "10px 20px", fontSize: "12px", color: "#999", fontStyle: "italic" }}>
                           No sub sections.
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
-            {sections.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#999", fontSize: "13px" }}>No sections available for this product.</div>}
-          </div>
-        </aside>
+                  </div>
+                );
+              })}
+              {sections.length === 0 && <div style={{ padding: "20px", textAlign: "center", color: "#999" }}>No sections found.</div>}
+            </div>
+          </aside>
+        )}
 
         {/* Content Viewer */}
         <div className="product-content-area">

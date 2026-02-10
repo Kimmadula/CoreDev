@@ -1,0 +1,177 @@
+/* ArticleContent.css */
+
+/* CUSTOM VIEWER SCOPE */
+.custom-article-content.ql-editor {
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: left;
+    color: #1a1a1a;
+}
+
+/* RESET & BASE SETUP - Kill default markers */
+.custom-article-content.ql-editor ul,
+.custom-article-content.ql-editor ol {
+    margin: 1em 0 !important;
+    padding-left: 0 !important;
+    /* Managed by li margins/padding */
+    list-style: none !important;
+    /* HIDE NATIVE - We use pseudo-elements */
+}
+
+.custom-article-content.ql-editor li {
+    display: block !important;
+    position: relative !important;
+    margin: 0.5em 0 !important;
+    padding-left: 1.5em !important;
+    /* Space for marker */
+    margin-left: 1.5em !important;
+    /* Indent from parent */
+    color: inherit;
+    background: transparent;
+    text-align: left !important;
+    white-space: pre-wrap !important;
+    overflow: visible !important;
+}
+
+/* HIDE NATIVE MARKER explicitly */
+.custom-article-content.ql-editor li::marker {
+    content: none !important;
+    display: none !important;
+}
+
+/* --- UNORDERED LISTS (Bullets) --- */
+
+/* Level 1: Disc */
+.custom-article-content.ql-editor ul>li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.5em;
+    /* Match padding-left */
+    text-align: left;
+    /* or center */
+    font-weight: bold;
+    color: #000;
+}
+
+/* Level 2: Circle */
+.custom-article-content.ql-editor ul ul>li::before,
+.custom-article-content.ql-editor ul>li.ql-indent-1::before {
+    content: "○";
+}
+
+/* Level 3: Square */
+.custom-article-content.ql-editor ul ul ul>li::before,
+.custom-article-content.ql-editor ul>li.ql-indent-2::before {
+    content: "■";
+    font-size: 0.8em;
+    top: 0.1em;
+}
+
+
+/* --- ORDERED LISTS (Counters) --- */
+
+/* Reset Counters */
+.custom-article-content.ql-editor ol {
+    counter-reset: ql-ol;
+}
+
+.custom-article-content.ql-editor ol ol {
+    counter-reset: ql-ol-2;
+}
+
+.custom-article-content.ql-editor ol ol ol {
+    counter-reset: ql-ol-3;
+}
+
+/* Increment Counters */
+.custom-article-content.ql-editor ol>li {
+    counter-increment: ql-ol;
+}
+
+.custom-article-content.ql-editor ol ol>li {
+    counter-increment: ql-ol-2;
+}
+
+.custom-article-content.ql-editor ol ol ol>li {
+    counter-increment: ql-ol-3;
+}
+
+/* Level 1: Decimal */
+.custom-article-content.ql-editor ol>li::before {
+    content: counter(ql-ol) ".";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.5em;
+    text-align: left;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Level 2: Lower Alpha */
+.custom-article-content.ql-editor ol ol>li::before,
+.custom-article-content.ql-editor ol>li.ql-indent-1::before {
+    content: counter(ql-ol-2, lower-alpha) ".";
+}
+
+/* Level 3: Lower Roman */
+.custom-article-content.ql-editor ol ol ol>li::before,
+.custom-article-content.ql-editor ol>li.ql-indent-2::before {
+    content: counter(ql-ol-3, lower-roman) ".";
+    text-align: right;
+    /* Roman nums align better right */
+    padding-right: 0.5em;
+    left: -0.5em;
+    /* Adjust for right align */
+}
+
+
+/* --- INDENTATION HANDLING (Margins) --- */
+.custom-article-content.ql-editor .ql-indent-1 {
+    margin-left: 3em !important;
+}
+
+.custom-article-content.ql-editor .ql-indent-2 {
+    margin-left: 4.5em !important;
+}
+
+.custom-article-content.ql-editor .ql-indent-3 {
+    margin-left: 6em !important;
+}
+
+.custom-article-content.ql-editor .ql-indent-4 {
+    margin-left: 7.5em !important;
+}
+
+.custom-article-content.ql-editor .ql-indent-5 {
+    margin-left: 9em !important;
+}
+
+/* TYPOGRAPHY */
+.custom-article-content.ql-editor p,
+.custom-article-content.ql-editor div,
+.custom-article-content.ql-editor span,
+.custom-article-content.ql-editor h1,
+.custom-article-content.ql-editor h2,
+.custom-article-content.ql-editor h3,
+.custom-article-content.ql-editor li {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    text-align: left !important;
+    hyphens: none !important;
+    line-height: 1.6;
+}
+
+/* IMAGE HANDLING */
+.custom-article-content.ql-editor img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1em auto;
+    /* Center the image */
+}

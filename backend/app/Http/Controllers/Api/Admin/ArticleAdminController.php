@@ -28,6 +28,7 @@ class ArticleAdminController extends Controller
             'title' => 'required|string|max:255',
             'slug' => 'required|string|unique:articles,slug',
             'content' => 'required|string',
+            'sort_order' => 'integer|min:0',
         ]);
 
         return Article::create($validated);
@@ -38,16 +39,22 @@ class ArticleAdminController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        $validated = $request->validate([
-            'sub_section_id' => 'sometimes|required|exists:sub_sections,id',
-            'section_id' => 'nullable|exists:sections,id',
-            'title' => 'sometimes|required|string|max:255',
-            'slug' => 'sometimes|required|string|unique:articles,slug,' . $article->id,
-            'content' => 'sometimes|required|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'sub_section_id' => 'sometimes|required|exists:sub_sections,id',
+                'section_id' => 'nullable|exists:sections,id',
+                'title' => 'sometimes|required|string|max:255',
+                'slug' => 'sometimes|required|string|unique:articles,slug,' . $article->id,
+                'content' => 'sometimes|required|string',
+                'sort_order' => 'sometimes|integer|min:0',
+            ]);
 
-        $article->update($validated);
-        return $article;
+            $article->update($validated);
+            return $article;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Article Update Error: ' . $e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     /**

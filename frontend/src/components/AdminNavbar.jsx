@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { apiGet } from "../api.js";
+import coreDevLogo from "../assets/coredevlogo.png";
 
 export default function AdminNavbar() {
     const location = useLocation();
@@ -51,9 +52,21 @@ export default function AdminNavbar() {
         }}>
             {/* LEFT SIDE */}
             <div style={{ display: "flex", alignItems: "center", gap: "20px", height: "100%" }}>
-                <Link to="/admin" style={{ textDecoration: "none" }}>
-                    <h3 style={{ margin: 0, marginRight: "10px", color: "#fff" }}>Admin</h3>
-                </Link>
+                <div style={{ display: "flex", alignItems: "center", gap: "15px", cursor: "default" }}>
+                    <div style={{ fontWeight: "700", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
+                        <img src={coreDevLogo} alt="CoreDev Logo" style={{ height: "24px" }} />
+                        <div style={{ display: "flex", flexDirection: "column", lineHeight: "1", justifyContent: "center" }}>
+                            <div style={{ fontWeight: "700", fontSize: "16px" }}>
+                                <span style={{ color: "#ff6c00" }}>Core</span><span style={{ color: "#fff" }}>Dev</span>
+                            </div>
+                            <div style={{ fontSize: "10px", color: "#ccc", fontWeight: "400", letterSpacing: "0.5px" }}>
+                                Solutions Inc.
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{ height: "20px", width: "1px", background: "#666" }}></div>
+                    <h3 style={{ margin: 0, color: "#fff" }}>Admin</h3>
+                </div>
 
                 {/* PRODUCTS LINK (SIMPLE) */}
                 <Link

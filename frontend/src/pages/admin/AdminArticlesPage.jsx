@@ -26,6 +26,120 @@ const slugify = (text) =>
     .replace(/[^\w-]+/g, "")
     .replace(/--+/g, "-");
 
+// HELPER: Clean list content - remove duplicate numbering/bullets from HTML
+const cleanListContent = (htmlContent) => {
+  if (!htmlContent) return "";
+
+  console.log('=== STARTING LIST CLEANING ===');
+  console.log('Original HTML:', htmlContent.substring(0, 500));
+
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, 'text/html');
+
+    // Find all list items
+    const listItems = Array.from(doc.querySelectorAll('li'));
+
+    console.log('Found', listItems.length, 'list items');
+
+    listItems.forEach((li, index) => {
+      // Get the full text to check
+      const originalText = li.textContent.trim();
+      console.log(`\nLI #${index} original text: "${originalText}"`);
+      console.log(`LI #${index} HTML:`, li.innerHTML);
+
+      // REMOVE EMPTY OR GHOST LIST ITEMS
+      // These create lone bullets/numbers with no content
+      if (!originalText ||
+        /^[\s]*$/.test(originalText) ||                    // Empty
+        /^[\s]*\d{1,3}[\.\)]\s*$/.test(originalText) ||    // Just "1." or "2)"
+        /^[\s]*[a-zA-Z][\.\)]\s*$/.test(originalText) ||   // Just "a." or "b)"
+        /^[\s]*[•◦▪–—\-]\s*$/.test(originalText)) {        // Just "•" or "-"
+        console.log(`>>> REMOVING empty/ghost LI #${index}: "${originalText}"`);
+        li.remove();
+        return;
+      }
+
+      // Track if we made changes
+      let cleaned = false;
+
+      // Process all child nodes
+      const processNode = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          let txt = node.textContent;
+          const originalTxt = txt;
+
+          // Remove leading numbers/letters followed by period/paren and space
+          // Matches: "1. ", "10. ", "a. ", "A) ", etc.
+          txt = txt.replace(/^[\s]*\d{1,3}[\.\)]\s+/, '');
+          txt = txt.replace(/^[\s]*[a-zA-Z][\.\)]\s+/, '');
+          // Remove bullets: "• ", "◦ ", "▪ ", etc.
+          txt = txt.replace(/^[\s]*[•◦▪–—\-]\s+/, '');
+
+          if (txt !== originalTxt) {
+            console.log(`>>> Cleaned text node in LI #${index}:`);
+            console.log(`    BEFORE: "${originalTxt}"`);
+            console.log(`    AFTER:  "${txt}"`);
+            node.textContent = txt;
+            cleaned = true;
+          }
+        }
+      };
+
+      // Process direct child text nodes first
+      let foundTextNode = false;
+      for (let i = 0; i < li.childNodes.length; i++) {
+        const child = li.childNodes[i];
+        if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) {
+          console.log(`  Processing direct text node: "${child.textContent}"`);
+          processNode(child);
+          foundTextNode = true;
+          break; // Only clean first text node
+        }
+      }
+
+      // If no direct text node, check first element child
+      if (!foundTextNode) {
+        const firstElement = li.querySelector('*');
+        if (firstElement) {
+          console.log(`  No direct text node, checking first element:`, firstElement.tagName);
+          for (let i = 0; i < firstElement.childNodes.length; i++) {
+            const child = firstElement.childNodes[i];
+            if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) {
+              console.log(`  Processing text node inside element: "${child.textContent}"`);
+              processNode(child);
+              break;
+            }
+          }
+        }
+      }
+
+      if (!cleaned) {
+        console.log(`  No changes made to LI #${index}`);
+      }
+    });
+
+    // REMOVE EMPTY LISTS (after removing items)
+    const lists = Array.from(doc.querySelectorAll('ul, ol'));
+    lists.forEach(list => {
+      if (list.querySelectorAll('li').length === 0) {
+        console.log('>>> REMOVING empty list:', list.tagName);
+        list.remove();
+      }
+    });
+
+    const result = doc.body.innerHTML;
+    console.log('\n=== CLEANING COMPLETE ===');
+    console.log('Cleaned HTML length:', htmlContent.length, '→', result.length);
+    console.log('Cleaned HTML:', result.substring(0, 500));
+    return result;
+
+  } catch (e) {
+    console.error("Error cleaning content:", e);
+    return htmlContent;
+  }
+};
+
 export default function AdminArticlesPage() {
   const [items, setItems] = useState([]);
   const [subSections, setSubSections] = useState([]);
@@ -35,7 +149,7 @@ export default function AdminArticlesPage() {
 
   const [searchParams] = useSearchParams();
   const subSectionFilterId = searchParams.get("sub_section");
-  const sectionFilterId = searchParams.get("section"); // Keeping for backward compatibility or direct section links
+  const sectionFilterId = searchParams.get("section");
 
   // Form & Modal State
   const [showForm, setShowForm] = useState(false);
@@ -56,7 +170,6 @@ export default function AdminArticlesPage() {
   const [editSortOrder, setEditSortOrder] = useState(0);
   const [editSubSectionId, setEditSubSectionId] = useState("");
   const [editAutoSlug, setEditAutoSlug] = useState(false);
-
 
   // Refs for custom handlers
   const quillRef = useRef(null);
@@ -81,19 +194,10 @@ export default function AdminArticlesPage() {
       let filteredArticles = artRes;
       if (subSectionFilterId) {
         filteredArticles = artRes.filter(a => a.sub_section_id == subSectionFilterId);
-        // Helper: Find the sub section to display name
-        const currentSub = subSecRes.find(s => s.id == subSectionFilterId);
-        if (currentSub) {
-          // Can set page title state here if wanted
-        }
       } else if (sectionFilterId) {
-        // Fallback if we still use section_id directly
         filteredArticles = artRes.filter(a => a.section_id == sectionFilterId);
-      } else {
-        // If no filter, maybe show all or empty? Showing all for now.
       }
 
-      // Sort
       filteredArticles.sort((a, b) => (a.sort_order - b.sort_order) || (a.id - b.id));
       setItems(filteredArticles);
 
@@ -106,12 +210,9 @@ export default function AdminArticlesPage() {
 
   const openCreate = () => {
     setEditingId(null);
-    // Auto-fill title from SubSection if available
     const currentSub = subSections.find(s => s.id == subSectionFilterId);
     setTitle(currentSub ? currentSub.title : "");
 
-    // Generate a unique slug to avoid collisions (since title might be common like "Installation")
-    // Appending a short random string or component ID ensures uniqueness.
     if (currentSub) {
       const uniqueSuffix = Math.random().toString(36).substring(2, 7);
       setSlug(slugify(currentSub.title) + "-" + uniqueSuffix);
@@ -158,23 +259,26 @@ export default function AdminArticlesPage() {
     setEditSlug(article.slug || "");
     setEditContent(article.content || "");
     setEditSortOrder(article.sort_order || 0);
-    setEditSubSectionId(article.sub_section_id || article.section_id || ""); // Fallback
+    setEditSubSectionId(article.sub_section_id || article.section_id || "");
     setEditAutoSlug(article.slug === slugify(article.title));
     setShowForm(true);
   };
 
   const saveEdit = async () => {
     setErr("");
+    const payload = {
+      sub_section_id: editSubSectionId,
+      title: editTitle,
+      slug: editSlug || slugify(editTitle),
+      content: editContent,
+      sort_order: parseInt(editSortOrder) || 0
+    };
+    console.log("Sending payload:", payload);
+
     try {
       await apiAdmin(`/admin/articles/${editingId}`, {
         method: "PUT",
-        body: {
-          sub_section_id: editSubSectionId,
-          title: editTitle,
-          slug: editSlug || slugify(editTitle),
-          content: editContent,
-          sort_order: parseInt(editSortOrder) || 0
-        }
+        body: payload
       });
       setShowForm(false);
       setEditingId(null);
@@ -182,7 +286,9 @@ export default function AdminArticlesPage() {
       fetchData();
       setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      console.error("Save Error:", e);
       setErr(String(e));
+      alert("Save Failed:\n" + String(e));
     }
   };
 
@@ -223,22 +329,29 @@ export default function AdminArticlesPage() {
         tab: {
           key: 9,
           handler: function (range, context) {
-            this.quill.insertText(range.index, "    ");
+            if (context.format.list) {
+              this.quill.format('indent', '+1');
+            } else {
+              this.quill.insertText(range.index, "    ");
+            }
             return false;
           }
         },
-        shift_tab: {
+        'shift+tab': {
           key: 9,
           shiftKey: true,
           handler: function (range, context) {
-            if (range.index >= 4) {
-              const text = this.quill.getText(range.index - 4, 4);
-              if (text === "    ") {
-                this.quill.deleteText(range.index - 4, 4);
-                return false;
+            if (context.format.list) {
+              this.quill.format('indent', '-1');
+            } else {
+              if (range.index >= 4) {
+                const text = this.quill.getText(range.index - 4, 4);
+                if (text === "    ") {
+                  this.quill.deleteText(range.index - 4, 4);
+                }
               }
             }
-            return true;
+            return false;
           }
         }
       }
@@ -249,7 +362,6 @@ export default function AdminArticlesPage() {
 
   if (loading) return <div className="admin-page-container" style={{ padding: 40 }}>Loading...</div>;
 
-  // Filter context for header
   const currentSubSection = subSections.find(s => s.id == subSectionFilterId);
 
   return (
@@ -321,7 +433,7 @@ export default function AdminArticlesPage() {
                 <button onClick={() => setShowForm(false)} className="btn-close-modal">&times;</button>
               </div>
 
-              {/* TITLE AND SLUG HIDDEN - Auto-populated */}
+              {/* TITLE AND SLUG HIDDEN */}
               <div style={{ display: 'none' }}>
                 <input className="form-input"
                   value={editingId ? editTitle : title}
@@ -358,25 +470,13 @@ export default function AdminArticlesPage() {
                   >
                     <option value="">-- Select --</option>
                     {subSections.filter(s => {
-                      // Filter logic:
-                      // 1. If we are inside a specific SubSection view (currentSubSection), show only sub-sections of that PRODUCT.
-                      // 2. If we are Editing, show only sub-sections of the SAME PRODUCT as the article.
-                      // 3. Otherwise show all.
-
                       let targetProductId = null;
                       if (currentSubSection?.section?.product_id) {
                         targetProductId = currentSubSection.section.product_id;
                       } else if (editingId) {
-                        // Find the product of the article we are editing
-                        // We can use the 'editSubSectionId' state which is initialized to the article's current sub_section
-                        // BUT be careful if user changes it. We want the ORIGINAL product context usually.
-                        // Actually, if they change the sub-section, they are picking from the list. The list should be constant for the PRODUCT.
-                        // So looking at the INITIAL editSubSectionId is safest, or just the current one if we assume they stay in product.
                         const activeSub = subSections.find(sub => sub.id == editSubSectionId);
                         if (activeSub?.section?.product_id) targetProductId = activeSub.section.product_id;
                       }
-
-                      // If we have a target product, filter. Else show all.
                       return targetProductId ? s.section?.product_id === targetProductId : true;
                     }).map(s => (
                       <option key={s.id} value={s.id}>{s.title}</option>
@@ -411,7 +511,6 @@ export default function AdminArticlesPage() {
             </div>
           </>
         )}
-
 
         <div className="article-list">
           {items.length === 0 ? (

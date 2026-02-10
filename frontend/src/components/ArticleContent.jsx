@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./ArticleContent.css";
 
 export default function ArticleContent({ content }) {
     const [safeContent, setSafeContent] = useState("");
@@ -27,88 +28,11 @@ export default function ArticleContent({ content }) {
             processedIdx = processedIdx.replace(/ql-align-justify/g, 'ql-align-left');
             processedIdx = processedIdx.replace(/text-align:\s*justify/gi, 'text-align: left');
 
-            // 4. Inject Robust CSS for Lists and Typography
-            const styleFix = `<style>
-        /* Force Reset - Scoped to Custom Viewer */
-        .custom-article-content .ql-editor ul, .custom-article-content .ql-editor ol { margin: 0 0 1em 0 !important; padding: 0 !important; list-style: none !important; }
-        .custom-article-content .ql-editor li { 
-            display: block !important; 
-            position: relative !important; 
-            margin: 0.5em 0 !important; 
-            padding-left: 1.5em !important; 
-            color: inherit; 
-            background: transparent; 
-            text-align: left !important; 
-            overflow: visible !important; 
-        }
-        .custom-article-content .ql-editor li::marker { content: none !important; display: none !important; } 
-        .custom-article-content .ql-editor .ql-ui { display: none !important; }
+            // 4. Inject Robust CSS for Lists and Typography - REMOVED: Using external CSS (ArticleContent.css) instead
+            // This prevents the double-counter/broken-nesting issues caused by manual pseudo-elements.
 
-        /* Custom Bullet (Unordered) */
-        .custom-article-content .ql-editor ul > li::before {
-            content: "•"; 
-            position: absolute; 
-            left: 0; 
-            top: -0.1em; 
-            color: #000 !important; 
-            font-weight: bold;
-            font-size: 1.5em; 
-            line-height: 1;
-        }
+            // processedIdx = styleFix + processedIdx; // Removed
 
-        /* Custom Nested Bullets */
-        .custom-article-content .ql-editor ul ul > li::before { content: "○"; }
-        .custom-article-content .ql-editor ul ul ul > li::before { content: "▪"; }
-
-        /* Custom Numbers (Ordered) */
-        .custom-article-content .ql-editor ol { counter-reset: ql-ol; }
-        .custom-article-content .ql-editor ol > li { counter-increment: ql-ol; }
-        .custom-article-content .ql-editor ol > li::before {
-            content: counter(ql-ol) ".";
-            position: absolute;
-            left: 0;
-            width: 1.5em; 
-            text-align: left;
-            color: #000 !important; 
-            font-weight: bold;
-            font-size: 1em;
-        }
-
-        /* Nested OL */
-        .custom-article-content .ql-editor ol ol { counter-reset: ql-ol-2; }
-        .custom-article-content .ql-editor ol ol > li { counter-increment: ql-ol-2; }
-        .custom-article-content .ql-editor ol ol > li::before {
-            content: counter(ql-ol-2, lower-alpha) ".";
-        }
-
-        /* Safe Paragraphs & Text Alignment Enforcement - FIXED WORD BREAKING */
-        .custom-article-content .ql-editor p, 
-        .custom-article-content .ql-editor div, 
-        .custom-article-content .ql-editor span,
-        .custom-article-content .ql-editor h1,
-        .custom-article-content .ql-editor h2,
-        .custom-article-content .ql-editor h3,
-        .custom-article-content .ql-editor h4,
-        .custom-article-content .ql-editor h5,
-        .custom-article-content .ql-editor h6,
-        .custom-article-content .ql-editor li { 
-          hyphens: none !important; 
-          -webkit-hyphens: none !important;
-          word-break: normal !important;
-          overflow-wrap: break-word !important;
-          word-wrap: break-word !important;
-          text-align: left !important;
-          text-justify: none !important;
-          white-space: normal !important;
-        }
-        
-        /* Ensure all text nodes wrap properly */
-        .custom-article-content * {
-          word-break: normal !important;
-          overflow-wrap: break-word !important;
-        }
-      </style>`;
-            processedIdx = styleFix + processedIdx;
 
             // 5. Parse HTML to handle YouTube video embedding AND Content Cleaning safely
             const parser = new DOMParser();

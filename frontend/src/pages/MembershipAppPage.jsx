@@ -68,7 +68,14 @@ export default function MembershipAppPage() {
             <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "5px" }}>
               <div style={{ fontWeight: "700", fontSize: "16px", display: "flex", alignItems: "center", gap: "5px" }}>
                 <img src={coreDevLogo} alt="CoreDev Logo" style={{ height: "24px" }} />
-                <span><span style={{ color: "#ff6c00" }}>Core</span><span style={{ color: "#fff" }}>Dev</span></span>
+                <div style={{ display: "flex", flexDirection: "column", lineHeight: "1", justifyContent: "center" }}>
+                  <div style={{ fontWeight: "700", fontSize: "16px" }}>
+                    <span style={{ color: "#ff6c00" }}>Core</span><span style={{ color: "#fff" }}>Dev</span>
+                  </div>
+                  <div style={{ fontSize: "10px", color: "#ccc", fontWeight: "400", letterSpacing: "0.5px" }}>
+                    Solutions Inc.
+                  </div>
+                </div>
               </div>
             </Link>
             <div style={{ height: "20px", width: "1px", background: "#666" }}></div>

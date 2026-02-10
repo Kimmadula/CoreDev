@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Article extends Model
 {
-    protected $fillable = ['section_id', 'sub_section_id', 'title', 'slug', 'content'];
+    protected $fillable = ['section_id', 'sub_section_id', 'title', 'slug', 'content', 'sort_order'];
 
     public function section(): BelongsTo
     {
