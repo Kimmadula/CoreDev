@@ -29,6 +29,7 @@ Route::middleware('admin.key')->prefix('admin')->group(function () {
   Route::delete('/sections/{section}', [SectionAdminController::class, 'destroy']);
 
   Route::get('/articles', [ArticleAdminController::class, 'index']);
+  Route::get('/articles/{article}', [ArticleAdminController::class, 'show']);
   Route::post('/articles', [ArticleAdminController::class, 'store']);
   Route::put('/articles/{article}', [ArticleAdminController::class, 'update']);
   Route::delete('/articles/{article}', [ArticleAdminController::class, 'destroy']);

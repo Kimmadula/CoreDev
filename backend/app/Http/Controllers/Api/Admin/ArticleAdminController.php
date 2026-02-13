@@ -14,7 +14,19 @@ class ArticleAdminController extends Controller
      */
     public function index()
     {
-        return Article::with('section')->orderBy('title')->get();
+        // Exclude 'content' to prevent memory exhaustion
+        return Article::select('id', 'section_id', 'sub_section_id', 'title', 'slug', 'sort_order', 'updated_at')
+            ->with('section')
+            ->orderBy('title')
+            ->get();
+    }
+
+    /**
+     * Display the specified article.
+     */
+    public function show(Article $article)
+    {
+        return $article;
     }
 
     /**

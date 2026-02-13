@@ -11,12 +11,6 @@ const Font = Quill.import('formats/font');
 Font.whitelist = ['sans-serif', 'serif', 'monospace'];
 Quill.register(Font, true);
 
-// Register custom sizes
-const Size = Quill.import('attributors/style/size');
-const fontSizeArr = ['10px', '12px', '14px', '16px', '18px', '24px', '32px'];
-Size.whitelist = fontSizeArr;
-Quill.register(Size, true);
-
 const slugify = (text) =>
   text
     .toString()
@@ -253,15 +247,25 @@ export default function AdminArticlesPage() {
     }
   };
 
-  const startEdit = (article) => {
+  const startEdit = async (article) => {
     setEditingId(article.id);
     setEditTitle(article.title || "");
     setEditSlug(article.slug || "");
-    setEditContent(article.content || "");
     setEditSortOrder(article.sort_order || 0);
     setEditSubSectionId(article.sub_section_id || article.section_id || "");
     setEditAutoSlug(article.slug === slugify(article.title));
+
+    // Clear content initially while loading
+    setEditContent("");
     setShowForm(true);
+
+    try {
+      const fullArticle = await apiAdmin(`/admin/articles/${article.id}`, { method: "GET" });
+      setEditContent(fullArticle.content || "");
+    } catch (e) {
+      console.error("Failed to fetch article details:", e);
+      setErr("Failed to load article content: " + String(e));
+    }
   };
 
   const saveEdit = async () => {
@@ -309,7 +313,6 @@ export default function AdminArticlesPage() {
     toolbar: {
       container: [
         [{ 'header': [1, 2, false] }],
-        [{ 'size': fontSizeArr }],
         [{ 'font': [] }],
         ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
@@ -358,7 +361,7 @@ export default function AdminArticlesPage() {
     }
   }), []);
 
-  const formats = ['header', 'size', 'font', 'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block', 'list', 'indent', 'align', 'color', 'background', 'link', 'image', 'video'];
+  const formats = ['header', 'font', 'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block', 'list', 'indent', 'align', 'color', 'background', 'link', 'image', 'video'];
 
   if (loading) return <div className="admin-page-container" style={{ padding: 40 }}>Loading...</div>;
 
