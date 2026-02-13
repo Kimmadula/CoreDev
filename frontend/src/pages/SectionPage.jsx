@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { apiGet } from "../api.js";
+import BackToTop from "../components/BackToTop.jsx";
 
 export default function SectionPage() {
   const { slug } = useParams();
@@ -137,6 +138,7 @@ export default function SectionPage() {
           </div>
         )}
       </div>
+      <BackToTop />
     </div>
   );
 }

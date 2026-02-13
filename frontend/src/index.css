@@ -41,7 +41,7 @@ body {
   /* Avoid breaking words mid-word (PDF artifacts aside) */
   overflow-wrap: break-word;
   word-break: normal;
-  white-space: normal;
+  white-space: pre-wrap;
 }
 
 .ql-editor p {

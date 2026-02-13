@@ -4,6 +4,7 @@ import { apiGet } from "../api.js";
 import "./LandingPage.css";
 import coreDevLogo from "../assets/coredevlogo.png";
 import bgImage from "../assets/bg3.jpg";
+import BackToTop from "../components/BackToTop.jsx";
 
 export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -203,16 +204,26 @@ export default function LandingPage() {
           <div className="container">
             <h2 className="section-title">Products</h2>
 
-            <div className="products-grid">
+            <div className="products-list">
               {loading ? (
                 <p>Loading products...</p>
               ) : (
                 filteredProducts.map((product) => {
                   const { icon, link } = getProductMeta(product);
                   return (
-                    <Link to={link} key={product.id} className="product-card" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                      <div className="product-icon">{icon}</div>
-                      <div className="product-name">{product.name}</div>
+                    <Link to={link} key={product.id} className="product-list-item">
+                      <div className="product-content">
+                        <div className="product-icon">{icon}</div>
+                        <div className="product-info">
+                          <div className="product-name">{product.name}</div>
+                          {/* Optional description if available in future */}
+                        </div>
+                      </div>
+                      <div className="product-chevron">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                      </div>
                     </Link>
                   );
                 })
@@ -238,6 +249,8 @@ export default function LandingPage() {
             <div className="copyright">© 2026 CoreDev. All rights reserved.</div>
           </div>
         </footer>
+
+        <BackToTop />
       </div>
     </div>
   );

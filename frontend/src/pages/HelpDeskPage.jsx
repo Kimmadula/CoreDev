@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { apiGet } from "../api.js";
 import ArticleContent from "../components/ArticleContent.jsx";
+import BackToTop from "../components/BackToTop.jsx";
 import "./HelpDeskPage.css";
 import "./ProductPage.css";
 
 export default function HelpDeskPage() {
+  const contentRef = useRef(null);
   const [product, setProduct] = useState(null);
   const [sections, setSections] = useState([]);
   const [articles, setArticles] = useState([]);
@@ -149,7 +151,17 @@ export default function HelpDeskPage() {
         )}
 
         {/* Content Viewer - Clean Style */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#fff", position: "relative", padding: "40px" }}>
+        <div
+          ref={contentRef}
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            background: "#fff",
+            position: "relative",
+            padding: "40px",
+            overflowY: "auto"
+          }}>
           {/* Mobile Sidebar Toggle (Floating) */}
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -183,6 +195,7 @@ export default function HelpDeskPage() {
               </div>
             )}
           </div>
+          <BackToTop targetRef={contentRef} />
         </div>
 
         {/* Floating Navigation Arrows (Optional: Implement Logic later) */}

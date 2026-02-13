@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiGet } from "../api.js";
+import BackToTop from "../components/BackToTop.jsx";
 
 export default function ProductsPage() {
   const [items, setItems] = useState([]);
@@ -24,6 +25,7 @@ export default function ProductsPage() {
         ))}
       </ul>
       {items.length === 0 && !err && <p>No products yet.</p>}
+      <BackToTop />
     </div>
   );
 }

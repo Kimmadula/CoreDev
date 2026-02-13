@@ -2,7 +2,7 @@
 
 /* CUSTOM VIEWER SCOPE */
 .custom-article-content.ql-editor {
-    white-space: normal;
+    white-space: pre-wrap;
     word-break: normal;
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -164,6 +164,7 @@
     text-align: left !important;
     hyphens: none !important;
     line-height: 1.6;
+    white-space: pre-wrap !important;
 }
 
 /* IMAGE HANDLING */

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { apiGet } from "../api.js";
 import ArticleContent from "../components/ArticleContent.jsx";
@@ -6,10 +6,12 @@ import "./HelpDeskPage.css"; // Reuse styling
 import "./ProductPage.css"; // New responsive styling
 import "react-quill-new/dist/quill.snow.css";
 import coreDevLogo from "../assets/coredevlogo.png";
+import BackToTop from "../components/BackToTop.jsx";
 
 export default function ProductPage() {
   const { slug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const contentRef = useRef(null);
   const [product, setProduct] = useState(null);
   const [sections, setSections] = useState([]);
   const [products, setProducts] = useState([]);
@@ -231,7 +233,7 @@ export default function ProductPage() {
         )}
 
         {/* Content Viewer */}
-        <div className="product-content-area">
+        <div className="product-content-area" ref={contentRef}>
 
           <div style={{ height: "40px", borderBottom: "1px solid #ddd", background: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 15px", position: "sticky", top: 0, zIndex: 9 }}>
             <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
@@ -266,6 +268,7 @@ export default function ProductPage() {
             </div>
           </div>
 
+          <BackToTop targetRef={contentRef} />
         </div>
       </div>
     </div >

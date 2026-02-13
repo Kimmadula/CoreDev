@@ -17,12 +17,15 @@ export default function ArticleContent({ content }) {
             processedIdx = processedIdx.replace(/&nbsp;/g, ' ');
             processedIdx = processedIdx.replace(/\u00A0/g, ' '); // Unicode non-breaking space
 
-            // 1b. Collapse multiple spaces into single spaces
-            processedIdx = processedIdx.replace(/\s{2,}/g, ' ');
+            // 1b. Collapse multiple spaces into single spaces - REMOVED to allow indentation
+            // processedIdx = processedIdx.replace(/\s{2,}/g, ' ');
 
             // 2. Strip borders and shadows to fix "box thingy", but ALLOW backgrounds (for highlights)
             processedIdx = processedIdx.replace(/border(-[a-z]+)?:\s*[^;]+;?/gi, '');
             processedIdx = processedIdx.replace(/box-shadow:\s*[^;]+;?/gi, '');
+
+            // 2b. Strip WHITE backgrounds (fix copy-paste artifacts)
+            processedIdx = processedIdx.replace(/background(-color)?:\s*(rgb\(255,\s*255,\s*255\)|#ffffff|#fff|white)\s*;?/gi, '');
 
             // 3. Fix legacy alignment classes
             processedIdx = processedIdx.replace(/ql-align-justify/g, 'ql-align-left');
@@ -131,7 +134,7 @@ export default function ArticleContent({ content }) {
             wordBreak: "normal",
             overflowWrap: "break-word",
             wordWrap: "break-word",
-            whiteSpace: "normal",
+            whiteSpace: "pre-wrap",
             textAlign: "left",
             hyphens: "none",
             WebkitHyphens: "none"

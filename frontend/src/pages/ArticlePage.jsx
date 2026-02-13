@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { apiGet } from "../api.js";
 import ArticleContent from "../components/ArticleContent.jsx";
+import BackToTop from "../components/BackToTop.jsx";
 
 export default function ArticlePage() {
   const { slug } = useParams();
@@ -73,6 +74,7 @@ export default function ArticlePage() {
           </article>
         )}
       </div>
+      <BackToTop />
     </div>
   );
 }
