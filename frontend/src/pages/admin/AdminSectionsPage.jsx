@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { apiGet, apiAdmin } from "../../api.js";
 import AdminNavbar from "../../components/AdminNavbar.jsx";
 import "./Admin.css";
@@ -87,21 +88,12 @@ export default function AdminSectionsPage() {
       setSlug("");
       setSortOrder(0);
       setAutoSlug(true);
-      setSuccess("Section created successfully!");
+      toast.success("Section created successfully!");
       await loadSections();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      toast.error(String(e));
       setErr(String(e));
     }
-  }
-
-  async function startEdit(section) {
-    setEditingId(section.id);
-    setEditTitle(section.title);
-    setEditSlug(section.slug);
-    setEditSortOrder(section.sort_order || 0);
-    setEditProductId(section.product_id);
-    setEditAutoSlug(section.slug === slugify(section.title));
   }
 
   async function saveEdit() {
@@ -123,23 +115,24 @@ export default function AdminSectionsPage() {
         },
       });
       setEditingId(null);
-      setSuccess("Section updated successfully!");
+      toast.success("Section updated successfully!");
       await loadSections();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      toast.error(String(e));
       setErr(String(e));
     }
   }
 
+  // (Inside remove)
   async function remove(id) {
     setErr("");
     if (!confirm("Are you sure you want to delete this section?")) return;
     try {
       await apiAdmin(`/admin/sections/${id}`, { method: "DELETE" });
-      setSuccess("Section deleted successfully!");
+      toast.success("Section deleted successfully!");
       await loadSections();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      toast.error(String(e));
       setErr(String(e));
     }
   }

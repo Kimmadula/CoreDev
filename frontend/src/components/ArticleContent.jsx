@@ -52,14 +52,52 @@ export default function ArticleContent({ content }) {
                     return;
                 }
 
-                // B. Fix Double Numbering: "10. Head office" -> "Head office"
-                // IMPROVED: Only remove if it's genuinely a duplicate number at the start
+                // B. Fix Double Numbering and Hardcoded Numbers: "10. Text", "1.4.1. Text"
                 const firstChild = li.firstChild;
                 if (firstChild && firstChild.nodeType === Node.TEXT_NODE) {
                     const textContent = firstChild.textContent;
-                    const match = textContent.match(/^([0-9]{1,3}\.|[a-zA-Z]\.|[•–—-])\s+/);
+                    // Match "1.", "1.1.", "1.4.5.1.", "A.", "a)" etc.
+                    // Regex explanation:
+                    // ^\s*           : Start with optional whitespace
+                    // (
+                    //   [0-9]+(\.[0-9]+)*\.?  : Numbers with optional decimals (1, 1.1, 1.1.1) optionally ending with dot
+                    //   | [a-zA-Z]\.          : Single letter with dot (A., b.)
+                    //   | [•–—-]              : Bullets/dashes
+                    // )
+                    // \s+            : Must be followed by whitespace
+                    const match = textContent.match(/^\s*([0-9]+(\.[0-9]+)*\.?|[a-zA-Z]\.|[•–—-])\s+/);
                     if (match) {
-                        firstChild.textContent = textContent.replace(/^([0-9]{1,3}\.|[a-zA-Z]\.|[•–—-])\s+/, '');
+                        firstChild.textContent = textContent.replace(/^\s*([0-9]+(\.[0-9]+)*\.?|[a-zA-Z]\.|[•–—-])\s+/, '');
+                    }
+                }
+
+                // C. Handle Empty Parents of Nested Lists to prevent "Stacked Bullets"
+                // If an LI has a UL/OL as a child, and the direct text content is empty/whitespace, mark it to not show a bullet.
+                // We can't easily remove the LI because it holds the nested list.
+                // But we can check if it has meaningful text.
+                const hasNestedList = li.querySelector('ul, ol');
+                if (hasNestedList) {
+                    // Check if there represents meaningful content BEFORE the nested list
+                    // Previously we only checked TEXT_NODE, but it could be <b>Text</b> etc.
+                    let hasContent = false;
+
+                    li.childNodes.forEach(node => {
+                        // Ignore the nested list itself
+                        if (node === hasNestedList) return;
+
+                        // Check if it's a text node with content
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+                            hasContent = true;
+                        }
+                        // Check if it's an element (span, b, strong, em, etc) with content
+                        else if (node.nodeType === Node.ELEMENT_NODE && node.textContent.trim().length > 0) {
+                            hasContent = true;
+                        }
+                    });
+
+                    if (!hasContent) {
+                        li.style.listStyle = "none"; // Hide standard bullet
+                        li.classList.add('no-bullet');
                     }
                 }
             });

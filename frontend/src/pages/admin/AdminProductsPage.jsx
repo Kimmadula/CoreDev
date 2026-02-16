@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { apiGet, apiAdmin } from "../../api.js";
 import AdminNavbar from "../../components/AdminNavbar.jsx";
 import "./Admin.css";
@@ -67,22 +68,13 @@ export default function AdminProductsPage() {
       setSlug("");
       setSortOrder(0);
       setAutoSlug(true);
-      setShowForm(false); // Hide form after success
-      setSuccess("Product created successfully!");
+      setShowForm(false);
+      toast.success("Product created successfully!");
       await load();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      toast.error(String(e));
       setErr(String(e));
     }
-  }
-
-  async function startEdit(product) {
-    setShowForm(true); // Open form area for editing
-    setEditingId(product.id);
-    setEditName(product.name);
-    setEditSlug(product.slug);
-    setEditSortOrder(product.sort_order || 0);
-    setEditAutoSlug(product.slug === slugify(product.name));
   }
 
   async function saveEdit() {
@@ -100,23 +92,24 @@ export default function AdminProductsPage() {
       });
       setEditingId(null);
       setShowForm(false);
-      setSuccess("Product updated successfully!");
+      toast.success("Product updated successfully!");
       await load();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      toast.error(String(e));
       setErr(String(e));
     }
   }
 
+  // (Inside remove)
   async function remove(id) {
     setErr("");
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
       await apiAdmin(`/admin/products/${id}`, { method: "DELETE" });
-      setSuccess("Product deleted successfully!");
+      toast.success("Product deleted successfully!");
       await load();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      toast.error(String(e));
       setErr(String(e));
     }
   }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { apiGet } from "../api.js";
 import "./LandingPage.css";
 import coreDevLogo from "../assets/coredevlogo.png";
@@ -18,7 +19,10 @@ export default function LandingPage() {
       if (searchQuery.length > 1) {
         apiGet(`/search?q=${searchQuery}`)
           .then(data => setSearchResults(data))
-          .catch(err => console.error(err));
+          .catch(err => {
+            console.error(err);
+            toast.error("Search failed: " + String(err));
+          });
       } else {
         setSearchResults([]);
       }
@@ -37,6 +41,7 @@ export default function LandingPage() {
       })
       .catch((err) => {
         console.error("Failed to load products", err);
+        toast.error("Failed to load products: " + String(err));
         setLoading(false);
       });
   }, []);

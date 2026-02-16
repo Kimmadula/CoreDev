@@ -4,6 +4,7 @@ import ReactQuill, { Quill } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import "./Admin.css";
 import { apiAdmin, apiGet } from "../../api.js";
+import { toast } from "react-toastify";
 import AdminNavbar from "../../components/AdminNavbar.jsx";
 
 // Register custom fonts
@@ -239,10 +240,10 @@ export default function AdminArticlesPage() {
         }
       });
       setShowForm(false);
-      setSuccess("Article created!");
+      toast.success("Article created!");
       fetchData();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      toast.error(String(e));
       setErr(String(e));
     }
   };
@@ -285,14 +286,14 @@ export default function AdminArticlesPage() {
         body: payload
       });
       setShowForm(false);
+      setShowForm(false);
       setEditingId(null);
-      setSuccess("Article updated!");
+      toast.success("Article updated!");
       fetchData();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
       console.error("Save Error:", e);
+      toast.error(String(e));
       setErr(String(e));
-      alert("Save Failed:\n" + String(e));
     }
   };
 
@@ -300,10 +301,10 @@ export default function AdminArticlesPage() {
     if (!window.confirm("Delete this article?")) return;
     try {
       await apiAdmin(`/admin/articles/${id}`, { method: "DELETE" });
-      setSuccess("Article deleted!");
+      toast.success("Article deleted!");
       fetchData();
-      setTimeout(() => setSuccess(""), 3000);
     } catch (e) {
+      toast.error(String(e));
       setErr(String(e));
     }
   };

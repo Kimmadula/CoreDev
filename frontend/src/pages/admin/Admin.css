@@ -275,148 +275,42 @@
     font-weight: bold;
 }
 
-/* --- ORDERED LISTS (1, 1.1, 1.1.1) --- */
+/* --- ORDERED LISTS (Standard 1, 2, 3...) --- */
 
 .ql-editor ol {
     padding-left: 0;
-    counter-reset: cnt-0;
+    counter-reset: none;
+    /* Reset removed */
 }
 
-/* Ensure no default markers */
 .ql-editor ol li,
 .ql-editor ol li[data-list="ordered"] {
-    list-style-type: none !important;
+    list-style-type: decimal !important;
     position: relative;
     padding-left: 1.5em;
-    /* Space for marker */
+    /* Keep spacing */
 }
 
-/* LEVEL 0 (1, 2, 3...) */
-/* Matches <li> inside <ol> that isn't indented, OR the first level of a nested list */
-.ql-editor ol>li:not(.ql-indent-1):not(.ql-indent-2):not(.ql-indent-3) {
-    counter-increment: cnt-0;
-    counter-reset: cnt-1;
-    list-style-type: none !important;
-    /* Force override */
+/* RESET ANY NESTED COUNTER LOGIC IF IT EXISTS FROM OTHER SOURCES */
+.ql-editor ol>li::before,
+.ql-editor ol>li.ql-indent-1::before,
+.ql-editor ol>li.ql-indent-2::before,
+.ql-editor ol>li.ql-indent-3::before,
+.ql-editor ol li::before {
+    content: none !important;
 }
 
-.ql-editor ol>li:not(.ql-indent-1):not(.ql-indent-2):not(.ql-indent-3)::before {
-    content: counter(cnt-0) ".";
-    position: absolute;
-    left: 0;
-    color: #000 !important;
-    font-weight: bold;
-    width: 1.5em;
-    /* Ensure fixed width for alignment */
-}
-
-/* LEVEL 1 (1.1, 1.2...) */
-/* Flat Structure: .ql-indent-1 */
+/* Handle Indentation Margins standardly */
 .ql-editor ol>li.ql-indent-1 {
-    counter-increment: cnt-1;
-    counter-reset: cnt-2;
     padding-left: 3em;
-    /* Indent + Marker Space */
 }
 
-.ql-editor ol>li.ql-indent-1::before {
-    content: counter(cnt-0) "." counter(cnt-1);
-    position: absolute;
-    left: 1.5em;
-    /* Visible indent */
-    color: #000 !important;
-    font-weight: bold;
-}
-
-/* Nested Structure: ol ol li */
-.ql-editor ol ol {
-    counter-reset: cnt-1;
-    padding-left: 0;
-}
-
-.ql-editor ol ol>li {
-    counter-increment: cnt-1;
-    counter-reset: cnt-2;
-}
-
-.ql-editor ol ol>li::before {
-    content: counter(cnt-0) "." counter(cnt-1);
-    position: absolute;
-    left: 0;
-    color: #000 !important;
-    font-weight: bold;
-}
-
-
-/* LEVEL 2 (1.1.1, 1.1.2...) */
-/* Flat Structure: .ql-indent-2 */
 .ql-editor ol>li.ql-indent-2 {
-    counter-increment: cnt-2;
-    counter-reset: cnt-3;
-    /* Future proofing */
     padding-left: 4.5em;
 }
 
-.ql-editor ol>li.ql-indent-2::before {
-    content: counter(cnt-0) "." counter(cnt-1) "." counter(cnt-2);
-    position: absolute;
-    left: 3em;
-    color: #000 !important;
-    font-weight: bold;
-}
-
-/* Nested Structure: ol ol ol li */
-.ql-editor ol ol ol {
-    counter-reset: cnt-2;
-    padding-left: 0;
-}
-
-.ql-editor ol ol ol>li {
-    counter-increment: cnt-2;
-    counter-reset: cnt-3;
-}
-
-.ql-editor ol ol ol>li::before {
-    content: counter(cnt-0) "." counter(cnt-1) "." counter(cnt-2);
-    position: absolute;
-    left: 0;
-    color: #000 !important;
-    font-weight: bold;
-}
-
-/* LEVEL 3 (1.1.1.1...) */
-/* Flat Structure: .ql-indent-3 */
 .ql-editor ol>li.ql-indent-3 {
-    counter-increment: cnt-3;
-    counter-reset: cnt-4;
     padding-left: 6em;
-}
-
-.ql-editor ol>li.ql-indent-3::before {
-    content: counter(cnt-0) "." counter(cnt-1) "." counter(cnt-2) "." counter(cnt-3);
-    position: absolute;
-    left: 4.5em;
-    color: #000 !important;
-    font-weight: bold;
-}
-
-/* Nested Structure: ol ol ol ol li */
-.ql-editor ol ol ol ol {
-    counter-reset: cnt-3;
-    padding-left: 0;
-}
-
-.ql-editor ol ol ol ol>li {
-    counter-increment: cnt-3;
-    counter-reset: cnt-4;
-}
-
-.ql-editor ol ol ol ol>li::before {
-    content: counter(cnt-0) "." counter(cnt-1) "." counter(cnt-2) "." counter(cnt-3);
-    position: absolute;
-    left: 0;
-    color: #000 !important;
-    font-weight: bold;
 }
 
 /* Preview Section */

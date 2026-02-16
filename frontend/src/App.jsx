@@ -1,5 +1,10 @@
 import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import PublicLayout from "./components/PublicLayout.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
+
 import LandingPage from "./pages/LandingPage.jsx";
 import ProductsPage from "./pages/ProductsPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
@@ -14,35 +19,41 @@ import AdminSectionsPage from "./pages/admin/AdminSectionsPage.jsx";
 import AdminArticlesPage from "./pages/admin/AdminArticlesPage.jsx";
 import AdminProductView from "./pages/admin/AdminProductView.jsx";
 import AdminSectionView from "./pages/admin/AdminSectionView.jsx";
+import RequireAuth from "./components/RequireAuth.jsx";
 
 export default function App() {
   return (
-    <Routes>
-      {/* PUBLIC */}
-      {/* PUBLIC */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/membership-app" element={<MembershipAppPage />} />
-      <Route element={<PublicLayout />}>
-        {/* Other public pages if any */}
-      </Route>
+    <ErrorBoundary>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
+      <Routes>
+        {/* PUBLIC */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/membership-app" element={<MembershipAppPage />} />
+        <Route element={<PublicLayout />}>
+          {/* Other public pages if any */}
+        </Route>
 
-      <Route path="/product/:slug" element={<ProductPage />} />
-      <Route path="/section/:slug" element={<SectionPage />} />
-      <Route path="/article/:slug" element={<ArticlePage />} />
+        <Route path="/product/:slug" element={<ProductPage />} />
+        <Route path="/section/:slug" element={<SectionPage />} />
+        <Route path="/article/:slug" element={<ArticlePage />} />
 
-      {/* ADMIN */}
-      <Route path="/admin" element={<AdminKeyPage />} />
-      <Route path="/admin/products" element={<AdminProductsPage />} />
-      <Route path="/admin/sections" element={<AdminSectionsPage />} />
-      <Route path="/admin/articles" element={<AdminArticlesPage />} />
-      <Route path="/admin/product-view/:id" element={<AdminProductView />} />
-      <Route path="/admin/section-view/:id" element={<AdminSectionView />} />
+        {/* ADMIN */}
+        <Route path="/admin" element={<AdminKeyPage />} />
 
-      {/* Standalone Pages (Full Screen) */}
-      <Route path="/helpdesk" element={<HelpDeskPage />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/admin/products" element={<AdminProductsPage />} />
+          <Route path="/admin/sections" element={<AdminSectionsPage />} />
+          <Route path="/admin/articles" element={<AdminArticlesPage />} />
+          <Route path="/admin/product-view/:id" element={<AdminProductView />} />
+          <Route path="/admin/section-view/:id" element={<AdminSectionView />} />
+        </Route>
 
-      {/* 404 Fallback */}
-      <Route path="*" element={<div style={{ padding: 40, textAlign: "center", fontSize: 24 }}>404 - Page Not Found</div>} />
-    </Routes>
+        {/* Standalone Pages (Full Screen) */}
+        <Route path="/helpdesk" element={<HelpDeskPage />} />
+
+        {/* 404 Fallback */}
+        <Route path="*" element={<div style={{ padding: 40, textAlign: "center", fontSize: 24 }}>404 - Page Not Found</div>} />
+      </Routes>
+    </ErrorBoundary>
   );
 }
