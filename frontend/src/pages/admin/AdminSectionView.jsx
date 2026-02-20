@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { apiGet, apiAdmin } from "../../api.js";
 import AdminNavbar from "../../components/AdminNavbar.jsx";
 import "./Admin.css";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 export default function AdminSectionView() {
     const { id } = useParams();
@@ -123,16 +124,28 @@ export default function AdminSectionView() {
         }
     }
 
-    async function remove(subId) {
-        if (!confirm("Are you sure? This will delete the sub section.")) return;
+    // Confirmation State
+    const [deleteId, setDeleteId] = useState(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    const confirmDelete = (subId) => {
+        setDeleteId(subId);
+        setShowDeleteConfirm(true);
+    };
+
+    const handleDelete = async () => {
+        if (!deleteId) return;
         try {
-            await apiAdmin(`/admin/sub-sections/${subId}`, { method: "DELETE" });
+            await apiAdmin(`/admin/sub-sections/${deleteId}`, { method: "DELETE" });
             setSuccess("Sub Section deleted");
             fetchData();
         } catch (e) {
             setErr(String(e));
+        } finally {
+            setShowDeleteConfirm(false);
+            setDeleteId(null);
         }
-    }
+    };
 
     if (loading) return <div className="admin-page-container"><AdminNavbar /><div style={{ padding: 40 }}>Loading...</div></div>;
     if (!section) return <div className="admin-page-container"><AdminNavbar /><div style={{ padding: 40 }}>Section not found.</div></div>;
@@ -256,11 +269,19 @@ export default function AdminSectionView() {
                                 </div>
                                 <div style={{ display: 'flex', gap: 5 }}>
                                     <button onClick={(e) => { e.stopPropagation(); startEdit(sub); }} className="btn-edit">Edit</button>
-                                    <button onClick={(e) => { e.stopPropagation(); remove(sub.id); }} className="btn-delete">Delete</button>
+                                    <button onClick={(e) => { e.stopPropagation(); confirmDelete(sub.id); }} className="btn-delete">Delete</button>
                                 </div>
                             </div>
                         ))
                     )}
+                    <ConfirmationModal
+                        isOpen={showDeleteConfirm}
+                        onClose={() => setShowDeleteConfirm(false)}
+                        onConfirm={handleDelete}
+                        title="Delete Sub Section"
+                        message="Are you sure you want to delete this sub section? This action cannot be undone."
+                        confirmText="Delete Sub Section"
+                    />
                 </div>
             </div>
         </div>

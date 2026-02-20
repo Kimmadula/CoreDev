@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { apiGet, apiAdmin } from "../../api.js";
 import AdminNavbar from "../../components/AdminNavbar.jsx";
 import "./Admin.css";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 export default function AdminSectionsPage() {
   const [searchParams] = useSearchParams();
@@ -123,19 +124,30 @@ export default function AdminSectionsPage() {
     }
   }
 
-  // (Inside remove)
-  async function remove(id) {
+  // Confirmation State
+  const [deleteId, setDeleteId] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
     setErr("");
-    if (!confirm("Are you sure you want to delete this section?")) return;
     try {
-      await apiAdmin(`/admin/sections/${id}`, { method: "DELETE" });
+      await apiAdmin(`/admin/sections/${deleteId}`, { method: "DELETE" });
       toast.success("Section deleted successfully!");
       await loadSections();
     } catch (e) {
       toast.error(String(e));
       setErr(String(e));
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeleteId(null);
     }
-  }
+  };
 
   return (
     <div className="admin-page-container">
@@ -250,13 +262,21 @@ export default function AdminSectionsPage() {
                         <span className="article-tag">/{section.slug}</span>
                       </p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: 5 }}>
                       <button onClick={() => startEdit(section)} className="btn-edit" style={{ marginRight: 5 }}>Edit</button>
-                      <button onClick={() => remove(section.id)} className="btn-delete">Delete</button>
+                      <button onClick={() => confirmDelete(section.id)} className="btn-delete">Delete</button>
                     </div>
                   </div>
               ))
             )}
+            <ConfirmationModal
+              isOpen={showDeleteConfirm}
+              onClose={() => setShowDeleteConfirm(false)}
+              onConfirm={handleDelete}
+              title="Delete Section"
+              message="Are you sure you want to delete this section? This action cannot be undone."
+              confirmText="Delete Section"
+            />
           </div>
 
         </div>

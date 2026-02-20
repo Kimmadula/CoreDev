@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { apiGet, apiAdmin } from "../../api.js";
 import AdminNavbar from "../../components/AdminNavbar.jsx";
 import "./Admin.css";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 export default function AdminProductsPage() {
   const [items, setItems] = useState([]);
@@ -77,6 +78,21 @@ export default function AdminProductsPage() {
     }
   }
 
+  // Confirmation State
+  const [deleteId, setDeleteId] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  function startEdit(product) {
+    console.log("Starting edit for product:", product);
+    setEditingId(product.id);
+    // Set edit form state
+    setEditName(product.name || "");
+    setEditSlug(product.slug || "");
+    setEditSortOrder(product.sort_order || 0);
+    setEditAutoSlug(false);
+    setShowForm(true);
+  }
+
   async function saveEdit() {
     setErr("");
     setSuccess("");
@@ -100,19 +116,28 @@ export default function AdminProductsPage() {
     }
   }
 
-  // (Inside remove)
-  async function remove(id) {
+  // Handle Delete Click
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  // Actual Delete
+  const handleDelete = async () => {
+    if (!deleteId) return;
     setErr("");
-    if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      await apiAdmin(`/admin/products/${id}`, { method: "DELETE" });
+      await apiAdmin(`/admin/products/${deleteId}`, { method: "DELETE" });
       toast.success("Product deleted successfully!");
       await load();
     } catch (e) {
       toast.error(String(e));
       setErr(String(e));
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeleteId(null);
     }
-  }
+  };
 
   return (
     <div className="admin-page-container">
@@ -281,14 +306,32 @@ export default function AdminProductsPage() {
                       <span style={{ marginLeft: 10 }}>Order: {p.sort_order}</span>
                     </p>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <button onClick={(e) => { e.stopPropagation(); startEdit(p); }} className="btn-edit" style={{ marginRight: 5 }}>Edit</button>
-                    <button onClick={(e) => { e.stopPropagation(); remove(p.id); }} className="btn-delete" style={{ marginRight: 5 }}>Delete</button>
+                  <div style={{ display: 'flex', alignItems: 'center', position: 'relative', zIndex: 5 }}>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log("Edit clicked for", p.name);
+                      startEdit(p);
+                    }} className="btn-edit" style={{ marginRight: 5 }}>Edit</button>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      confirmDelete(p.id);
+                    }} className="btn-delete" style={{ marginRight: 5 }}>Delete</button>
                   </div>
                 </div>
               ))
             )}
           </div>
+
+          <ConfirmationModal
+            isOpen={showDeleteConfirm}
+            onClose={() => setShowDeleteConfirm(false)}
+            onConfirm={handleDelete}
+            title="Delete Product"
+            message="Are you sure you want to delete this product? This action cannot be undone and may affect associated sections and articles."
+            confirmText="Delete Product"
+          />
 
         </div>
       </div>

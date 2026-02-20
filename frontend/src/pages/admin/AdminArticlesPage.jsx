@@ -3,9 +3,11 @@ import { useSearchParams, Link } from "react-router-dom";
 import ReactQuill, { Quill } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import "./Admin.css";
+import "../../components/ArticleContent.css";
 import { apiAdmin, apiGet } from "../../api.js";
 import { toast } from "react-toastify";
 import AdminNavbar from "../../components/AdminNavbar.jsx";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 // Register custom fonts
 const Font = Quill.import('formats/font');
@@ -262,7 +264,7 @@ export default function AdminArticlesPage() {
 
     try {
       const fullArticle = await apiAdmin(`/admin/articles/${article.id}`, { method: "GET" });
-      setEditContent(fullArticle.content || "");
+      setEditContent(fullArticle.content ? cleanListContent(fullArticle.content) : "");
     } catch (e) {
       console.error("Failed to fetch article details:", e);
       setErr("Failed to load article content: " + String(e));
@@ -297,15 +299,27 @@ export default function AdminArticlesPage() {
     }
   };
 
-  const remove = async (id) => {
-    if (!window.confirm("Delete this article?")) return;
+  // Confirmation State
+  const [deleteId, setDeleteId] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const confirmDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
     try {
-      await apiAdmin(`/admin/articles/${id}`, { method: "DELETE" });
+      await apiAdmin(`/admin/articles/${deleteId}`, { method: "DELETE" });
       toast.success("Article deleted!");
       fetchData();
     } catch (e) {
       toast.error(String(e));
       setErr(String(e));
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeleteId(null);
     }
   };
 
@@ -491,7 +505,7 @@ export default function AdminArticlesPage() {
 
               <div className="form-group" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <label className="form-label">Content</label>
-                <div style={{ flex: 1, minHeight: 400 }}>
+                <div style={{ flex: 1, minHeight: 400 }} className="custom-article-content">
                   <ReactQuill
                     ref={quillRef}
                     theme="snow"
@@ -532,11 +546,19 @@ export default function AdminArticlesPage() {
                 </div>
                 <div className="article-actions">
                   <button onClick={() => startEdit(article)} className="btn-edit">Edit</button>
-                  <button onClick={() => remove(article.id)} className="btn-delete">Delete</button>
+                  <button onClick={() => confirmDelete(article.id)} className="btn-delete">Delete</button>
                 </div>
               </div>
             ))
           )}
+          <ConfirmationModal
+            isOpen={showDeleteConfirm}
+            onClose={() => setShowDeleteConfirm(false)}
+            onConfirm={handleDelete}
+            title="Delete Article"
+            message="Are you sure you want to delete this article? This action cannot be undone."
+            confirmText="Delete Article"
+          />
         </div>
       </div>
 

@@ -164,7 +164,7 @@ export default function ArticleContent({ content }) {
     }, [content]);
 
     return (
-        <div className="ql-editor custom-article-content" style={{
+        <div className="ql-editor custom-article-content live-article-view" style={{
             fontSize: "1rem",
             lineHeight: "1.8",
             color: "#000",

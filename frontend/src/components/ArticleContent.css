@@ -44,107 +44,92 @@
 }
 
 /* --- UNORDERED LISTS (Bullets) --- */
-.custom-article-content.ql-editor ul {
+.live-article-view ul {
     list-style-type: disc !important;
 }
 
-.custom-article-content.ql-editor ul li,
-.custom-article-content.ql-editor li[data-list="bullet"] {
+.live-article-view ul li,
+.live-article-view li[data-list="bullet"] {
     list-style-type: disc !important;
 }
 
 /* Ensure data-list="bullet" inside OL overrides the OL style */
-.custom-article-content.ql-editor ol li[data-list="bullet"] {
+.live-article-view ol li[data-list="bullet"] {
     list-style-type: disc !important;
 }
 
 /* Level 2: Circle */
-.custom-article-content.ql-editor ul ul li,
-.custom-article-content.ql-editor ul li.ql-indent-1 {
+.live-article-view ul ul li,
+.live-article-view ul li.ql-indent-1 {
     list-style-type: circle !important;
 }
 
 /* Level 3: Square */
-.custom-article-content.ql-editor ul ul ul li,
-.custom-article-content.ql-editor ul li.ql-indent-2 {
+.live-article-view ul ul ul li,
+.live-article-view ul li.ql-indent-2 {
     list-style-type: square !important;
 }
 
 /* ENSURE MARKERS ARE VISIBLE */
-.custom-article-content.ql-editor ul li::marker {
+.live-article-view ul li::marker {
     content: normal !important;
     color: inherit;
     /* Use text color */
 }
 
-/* Remove custom pseudo-elements if any left */
-.custom-article-content.ql-editor ul>li::before,
-.custom-article-content.ql-editor ul ul>li::before,
-.custom-article-content.ql-editor ul li::before {
-    content: none !important;
-}
-
-
 /* --- ORDERED LISTS (Counters) --- */
-.custom-article-content.ql-editor ol {
+.live-article-view ol {
     list-style-type: decimal !important;
 }
 
-.custom-article-content.ql-editor ol li,
-.custom-article-content.ql-editor li[data-list="ordered"] {
+.live-article-view ol li,
+.live-article-view li[data-list="ordered"] {
     list-style-type: decimal !important;
 }
 
 /* Ensure data-list="ordered" inside UL overrides the UL style */
-.custom-article-content.ql-editor ul li[data-list="ordered"] {
+.live-article-view ul li[data-list="ordered"] {
     list-style-type: decimal !important;
 }
 
-.custom-article-content.ql-editor ol li::marker {
+.live-article-view ol li::marker {
     content: normal !important;
     color: inherit;
     font-weight: bold;
 }
 
-.custom-article-content.ql-editor ol>li::before,
-.custom-article-content.ql-editor ol ul>li::before,
-.custom-article-content.ql-editor ol li::before {
-    content: none !important;
-}
-
-
 /* Fix Indentation for standard lists (padding instead of margin hacks) */
-.custom-article-content.ql-editor ol>li.ql-indent-1 {
+.live-article-view ol>li.ql-indent-1 {
     margin-left: 3em !important;
 }
 
-.custom-article-content.ql-editor ol>li.ql-indent-2 {
+.live-article-view ol>li.ql-indent-2 {
     margin-left: 4.5em !important;
 }
 
-.custom-article-content.ql-editor ol>li.ql-indent-3 {
+.live-article-view ol>li.ql-indent-3 {
     margin-left: 6em !important;
 }
 
 
 /* --- INDENTATION HANDLING (Margins) --- */
-.custom-article-content.ql-editor .ql-indent-1 {
+.live-article-view .ql-indent-1 {
     margin-left: 3em !important;
 }
 
-.custom-article-content.ql-editor .ql-indent-2 {
+.live-article-view .ql-indent-2 {
     margin-left: 4.5em !important;
 }
 
-.custom-article-content.ql-editor .ql-indent-3 {
+.live-article-view .ql-indent-3 {
     margin-left: 6em !important;
 }
 
-.custom-article-content.ql-editor .ql-indent-4 {
+.live-article-view .ql-indent-4 {
     margin-left: 7.5em !important;
 }
 
-.custom-article-content.ql-editor .ql-indent-5 {
+.live-article-view .ql-indent-5 {
     margin-left: 9em !important;
 }
 

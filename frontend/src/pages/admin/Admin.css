@@ -256,62 +256,37 @@
     line-height: 1.6 !important;
 }
 
-/* FORCE BULLETS TO BE VISIBLE AND BLACK (Global Fix) */
-.ql-editor ul {
-    padding-left: 0;
+/* Restored Base Quill Editor Defaults */
+.ql-editor ul,
+.ql-editor ol {
+    padding-left: 1.5em;
 }
 
 .ql-editor li {
-    list-style-type: none;
-    position: relative;
-    padding-left: 1.5em;
+    margin-bottom: 0.5em;
+    list-style: none !important;
+    /* Hide native bullets to prevent double-bullet rendering */
 }
 
-.ql-editor li::before {
-    content: "•";
-    position: absolute;
-    left: 0.5em;
-    color: #000 !important;
-    font-weight: bold;
+/* Style Quill's native generated bullets for different nesting levels */
+/* Level 1: Default Solid Dot (Quill handles this automatically but we can be explicit) */
+.ql-editor li[data-list="bullet"]>.ql-ui::before {
+    content: "\2022" !important;
 }
 
-/* --- ORDERED LISTS (Standard 1, 2, 3...) --- */
-
-.ql-editor ol {
-    padding-left: 0;
-    counter-reset: none;
-    /* Reset removed */
+/* Level 2: Hollow Circle */
+.ql-editor li[data-list="bullet"].ql-indent-1>.ql-ui::before {
+    content: "\25CB" !important;
 }
 
-.ql-editor ol li,
-.ql-editor ol li[data-list="ordered"] {
-    list-style-type: decimal !important;
-    position: relative;
-    padding-left: 1.5em;
-    /* Keep spacing */
+/* Level 3: Square */
+.ql-editor li[data-list="bullet"].ql-indent-2>.ql-ui::before {
+    content: "\25A0" !important;
+    font-size: 0.8em;
+    vertical-align: middle;
 }
 
-/* RESET ANY NESTED COUNTER LOGIC IF IT EXISTS FROM OTHER SOURCES */
-.ql-editor ol>li::before,
-.ql-editor ol>li.ql-indent-1::before,
-.ql-editor ol>li.ql-indent-2::before,
-.ql-editor ol>li.ql-indent-3::before,
-.ql-editor ol li::before {
-    content: none !important;
-}
 
-/* Handle Indentation Margins standardly */
-.ql-editor ol>li.ql-indent-1 {
-    padding-left: 3em;
-}
-
-.ql-editor ol>li.ql-indent-2 {
-    padding-left: 4.5em;
-}
-
-.ql-editor ol>li.ql-indent-3 {
-    padding-left: 6em;
-}
 
 /* Preview Section */
 .preview-container {
